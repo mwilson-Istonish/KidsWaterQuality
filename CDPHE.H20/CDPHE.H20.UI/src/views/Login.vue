@@ -26,13 +26,17 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        email: ""
-      }
+import LoginMixin from '../mixins/LoginMixin'
+export default {
+    mixins: [ LoginMixin ],
+    data() {
+        return {
+            email: ""
+        }
     },
-      
+    created() {
+        this.getWeatherForecast();
+    }, 
     methods: {
         submitEmail() {
             var buttonEle = document.getElementById("EmailSubmitBtn");
@@ -40,5 +44,5 @@
             this.$router.push("/Dashboard")
         }
     }
-  }
+}
 </script>

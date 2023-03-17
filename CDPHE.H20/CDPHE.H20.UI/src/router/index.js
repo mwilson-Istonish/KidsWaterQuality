@@ -22,6 +22,11 @@ const router = createRouter({
       path: '/Dashboard',
       name: 'Dashboard',
       component: () => import('../views/Dashboard.vue')
+    },   
+    {
+      path: '/Requests',
+      name: 'Requests',
+      component: () => import('../views/Requests.vue')
     },
     {
       path: '/:pathMatch(.*)*',
