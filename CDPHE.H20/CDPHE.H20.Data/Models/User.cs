@@ -8,6 +8,7 @@ namespace CDPHE.H20.Data.Models
 {
     public class User
     {
+        // Comment here
         public int Id { get; set; }
 
         public Guid Guid { get; set; }
