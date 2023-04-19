@@ -24,6 +24,14 @@ html, body {
     font-size:22px
 }
 
+.h20-footer-divider {
+    position:relative;
+    bottom:0.3rem;
+    border-right:solid 1px black;
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+}
+
 .h20-footer-icon:hover {
     color: #009add;
 }
@@ -57,6 +65,28 @@ html, body {
     background-color: white;
 }
 
+.h20-error-text{
+    margin-left:1rem;
+    color: red
+}
+
+.h20-request-row:hover {
+    background-color: #ececeb;
+    cursor: pointer;
+}
+
+.modal-dialog-centered {
+    bottom:3rem
+}
+
+label {
+    font-weight:500
+}
+
+.h20-blue-hover:hover {
+    color: #009add !important
+}
+
 .h20-footer {
     padding: 0.5rem !important;
     background-color: white;
@@ -69,6 +99,15 @@ html, body {
 .h20-btn {
     background-color: #009add !important;
     color: white !important; 
+}
+
+.h20-modal-header {
+    font-size: 22px;
+    font-weight: 600
+}
+
+.h20-modal-spacing {
+    margin-top: 2rem !important
 }
 
 body {
