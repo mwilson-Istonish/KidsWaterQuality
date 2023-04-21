@@ -1,5 +1,8 @@
 ﻿using CDPHE.H20.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Net;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,28 +12,30 @@ namespace CDPHE.H20.WebAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        public IConfiguration _configuration;
         private UserService _userService;
 
-        public UserController() 
+        public UserController(IConfiguration configuration) 
         {
+            _configuration = configuration;
             _userService = new UserService();
         }
-        // private UserService _userService { get; }
-        // GET: api/<UserController>
+       
         [HttpGet]
         [Route("all")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> GetUsers()
         {
-            
             var Users = await _userService.GetAllUsers();
             return Ok(Users);
         }
 
-        // GET api/<UserController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        // This method is an HTTP GET endpoint that takes an ID parameter from the route and returns a user with that ID
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var User = await _userService.GetUserById(id); // gets the user with the specified ID using the UserService
+            return Ok(User); // returns an HTTP 200 OK response with the user as the response body
         }
 
         // POST api/<UserController>
@@ -51,8 +56,17 @@ namespace CDPHE.H20.WebAPI.Controllers
         [Route("login/{userguid}/{token}")]
         public async Task<IActionResult> Login(string userguid, string token)
         {
-            var jwt = await _userService.Login(userguid, token);
-            return Ok(jwt);
+            var userRole = await _userService.Login(userguid, token);
+            if(userRole != null)
+            {
+                TokenController tokenController = new TokenController(_configuration);
+                var jwt = await tokenController.GetToken(userRole);
+                return Ok(jwt);
+            }
+            else
+            {
+                return Unauthorized();
+            }
         }
 
         [HttpPost]

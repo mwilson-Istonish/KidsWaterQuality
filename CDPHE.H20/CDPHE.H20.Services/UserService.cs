@@ -1,6 +1,7 @@
 ﻿using CDPHE.H20.Data.Context;
 using CDPHE.H20.Data.Models;
 using CDPHE.H20.Data.Queries;
+using CDPHE.H20.Data.ViewModels;
 using Dapper;
 using Microsoft.Identity.Client;
 using System;
@@ -14,12 +15,12 @@ namespace CDPHE.H20.Services
     public interface IUserService
     {
         public Task<IEnumerable<User>> GetAllUsers();
-        User GetUserById(int id);
+        public Task<User> GetUserById(int id);
         void AddUser(User user);
         void UpdateUser(User user);
         void DeleteUser(int id);
         public Task<bool> EmailUser(string email);
-        public Task<string> Login(string userguid, string token);
+        public Task<UserRole> Login(string userguid, string token);
     }
 
     public class UserService : IUserService
@@ -42,7 +43,7 @@ namespace CDPHE.H20.Services
             }
         }
 
-        public User GetUserById(int id)
+        public async Task<User> GetUserById(int id)
         {
             User user = new User();
 
@@ -76,7 +77,7 @@ namespace CDPHE.H20.Services
                     // Set MagicLink
                     try
                     {
-                        var magicLink = await connection.ExecuteAsync(query, new { Guid = g.ToString(), TimeStamp = DateTime.Now, Email = email });
+                        var magicLink = await connection.ExecuteAsync(query, new { Guid = g.ToString(), TimeStamp = DateTime.Now.AddHours(1), Email = email });
                     }
                     catch (Exception ex)
                     {
@@ -104,15 +105,16 @@ namespace CDPHE.H20.Services
             
         }
 
-        public async Task<string> Login(string userguid, string token)
+        public async Task<UserRole> Login(string userguid, string tempkey)
         {
             var query = UserQuery.Login();
 
             using (var connection = _dbContext.CreateConnection())
             {
-                var UserId = await connection.QueryAsync<int>(query, new { Guid = userguid, Token = token });
-                return UserId.ToString();
+                var userRole = await connection.QueryFirstOrDefaultAsync<UserRole>(query, new { Guid = userguid, Token = tempkey });
+                return userRole;
             }
         }
+
     }
 }
