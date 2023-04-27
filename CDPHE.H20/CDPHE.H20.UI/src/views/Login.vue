@@ -93,6 +93,10 @@ export default {
             else {
                 errorMsg = "Please provide a valid login code"
             }
+            this.getToken();
+            if (this.jwt = "") {
+                loginSuccess = false;
+            }
             if (loginSuccess) {
                 var myModalEl = document.getElementById('Login2FAModal');
                 var modal = bootstrap.Modal.getInstance(myModalEl)

@@ -7,7 +7,8 @@ const store = new Vuex.Store({
     userRole: "WQ Infrastructure Staff",
     waterForKidsRoles: ["WQ Infrastructure Staff", "WQ Fiscal Staff", "Facility User"],
     userManagementRoles: ["User Approver"],
-    count: 1
+    count: 1,
+    jwt: ""
   },
   mutations: {
     increment (state, incrementNum) {
@@ -18,6 +19,9 @@ const store = new Vuex.Store({
     },
     updateCount (state, newCount) {
         state.count = newCount;
+    },
+    updateJWT (state, jwt) {
+      state.jwt = jwt;
     }
   },
   getters: {
@@ -35,6 +39,9 @@ const store = new Vuex.Store({
     },
     getCount(state) {
         return state.count;
+    },
+    getJWT(state) {
+      return state.jwt
     }
   },
   actions:{}

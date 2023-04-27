@@ -11,7 +11,7 @@ import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.js'
 const app = createApp(App)
 const emitter = mitt();
 
-app.config.globalProperties.API_URL = 'https://localhost:7072/'
+app.config.globalProperties.API_URL = 'https://localhost:7242/'
 
 app.use(router)
 app.use(bootstrap)
