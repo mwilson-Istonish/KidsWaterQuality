@@ -56,7 +56,11 @@ namespace CDPHE.H20.Services
             // Check to see if the email exists in the User table
             var query = UserQuery.GetEmail();
             bool isValidEmail = false;
-            Guid g = Guid.NewGuid();
+
+            Random random = new Random();
+            int randomNumber = random.Next(0, 1000000); // Generate a random number between 0 and 999999.
+            string sixDigitNumber = randomNumber.ToString("D6"); // Format the number with leading zeroes to make it 6 digits long.
+
 
             using (var connection = _dbContext.CreateConnection())
             {
@@ -74,10 +78,14 @@ namespace CDPHE.H20.Services
                 // Set timestamp for logging in and insert
                 using(var connection = _dbContext.CreateConnection())
                 {
-                    // Set MagicLink
+                    // Set LoginToken
                     try
                     {
-                        var magicLink = await connection.ExecuteAsync(query, new { Guid = g.ToString(), TimeStamp = DateTime.Now.AddHours(1), Email = email });
+                        var setLoginToken = await connection.ExecuteAsync(query, new { Guid = sixDigitNumber, TimeStamp = DateTime.Now.AddMinutes(10), Email = email });
+                        
+                        // Send Email
+                        EmailService emailService = new EmailService();
+                        var response = await emailService.SendLoginEmail(email, sixDigitNumber);
                     }
                     catch (Exception ex)
                     {

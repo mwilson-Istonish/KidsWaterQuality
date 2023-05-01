@@ -1,14 +1,26 @@
-﻿using CDPHE.H20.Data.Models;
+﻿using CDPHE.H20.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Net;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace CDPHE.H20.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("v1/request")]
     [ApiController]
     public class RequestController : ControllerBase
     {
+        public IConfiguration _configuration;
+        private RequestService _requestService;
+
+        public RequestController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+            _requestService= new RequestService();
+        }
+
         // GET: api/<RequestController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -18,9 +30,10 @@ namespace CDPHE.H20.WebAPI.Controllers
 
         // GET api/<RequestController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var request = await _requestService.GetRequestAndDetails(id);
+            return Ok(request);
         }
 
         // POST api/<RequestController>
