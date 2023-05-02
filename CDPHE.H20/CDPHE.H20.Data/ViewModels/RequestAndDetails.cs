@@ -19,9 +19,34 @@ namespace CDPHE.H20.Data.ViewModels
         [JsonPropertyOrder(2)]
         public string Facility { get; set; }
 
+        [JsonProperty("wqcid")]
+        [JsonPropertyOrder(3)]
+        public string WQCID { get; set; }
+
+        [JsonProperty("address1")]
+        public string Address1 { get; set; }
+
+        [JsonProperty("address2")]
+        public string Address2 { get; set; }
+
+        [JsonProperty("city")]
+        public string City { get; set; }
+
+        [JsonProperty("state")]
+        public string State { get; set; }
+
+        [JsonProperty("zipcode")]
+        public string ZipCode { get; set; }
+
         [JsonProperty("provider")]
         [JsonPropertyOrder(3)]
         public string Provider { get; set; }
+
+        [JsonProperty("email")]
+        public string Email { get; set; }
+
+        [JsonProperty("phone")]
+        public string Phone { get; set; }
 
         [JsonProperty("createdAt")]
         [JsonPropertyOrder(4)]

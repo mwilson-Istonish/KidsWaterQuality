@@ -36,6 +36,13 @@ namespace CDPHE.H20.WebAPI.Controllers
             return Ok(request);
         }
 
+        [HttpGet("provider/{id}")]
+        public async Task<IActionResult> GetByProviderId(int id)
+        {
+            var request = await _requestService.GetRequestsByProvider(id);
+            return Ok(request);
+        }
+
         // POST api/<RequestController>
         [HttpPost]
         public void Post([FromBody] string value)
