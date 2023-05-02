@@ -1,14 +1,17 @@
+
 import Vuex from 'vuex'
+
 
 const store = new Vuex.Store({
   state: {
     title: "Vue Store",
     isLoggedIn: false,
-    userRole: "WQ Infrastructure Staff",
+    userRole: "Admin",
     waterForKidsRoles: ["WQ Infrastructure Staff", "WQ Fiscal Staff", "Facility User"],
     userManagementRoles: ["User Approver"],
     count: 1,
-    jwt: ""
+    jwtToken: JSON.parse(localStorage.getItem("jwt")),
+    user: {}
   },
   mutations: {
     increment (state, incrementNum) {
@@ -20,8 +23,15 @@ const store = new Vuex.Store({
     updateCount (state, newCount) {
         state.count = newCount;
     },
-    updateJWT (state, jwt) {
-      state.jwt = jwt;
+    updateJWT (state, jwtToken) {
+      //have to also set state to make it reactive in other components, but it pulls from localstorage in the get method
+      state.jwtToken = jwtToken;
+      localStorage.setItem('jwt', JSON.stringify(jwtToken));
+    },
+    removeJWT (state) {
+      //have to also set state to make it reactive in other components, but it pulls from localstorage in the get method
+      state.jwtToken = null   
+      localStorage.removeItem('jwt');
     }
   },
   getters: {
@@ -34,14 +44,14 @@ const store = new Vuex.Store({
     userManagementAccess(state, getters) {
         return state.userManagementRoles.includes(state.userRole) || getters.isAdmin
     },
-    isLoggedIn(state) {
-        return state.isLoggedIn;
-    },
     getCount(state) {
         return state.count;
     },
     getJWT(state) {
-      return state.jwt
+      return state.jwtToken
+    },
+    isLoggedIn(state) {
+      return state.jwtToken != null;
     }
   },
   actions:{}

@@ -23,7 +23,7 @@ import MyProfile from '@/components/modals/MyProfile.vue'
             </div>
           </div>
           <div class="col text-center">
-            <div v-show="this.store.getters.isLoggedIn">
+            <div v-show="isLoggedIn">
               <span v-on:click="navigateToPage('/Dashboard')" title="Dashboard"><i class="fa-solid fa-house-chimney h20-footer-icon h20-footer-icon-spacing"></i></span>
               <span class="h20-footer-icon-spacing h20-footer-divider"></span>
               <span data-bs-toggle="modal" data-bs-target="#MyProfileModal" title="My Profile"><i class="fa-solid fa-user-gear h20-footer-icon h20-footer-icon-spacing"></i></span>
@@ -39,6 +39,7 @@ import MyProfile from '@/components/modals/MyProfile.vue'
 <script>
   import { inject } from 'vue'
   import { useStore } from "vuex";
+  import { mapGetters } from 'vuex';
   export default {
     components: {
       MyProfile
@@ -59,6 +60,11 @@ import MyProfile from '@/components/modals/MyProfile.vue'
       },
       openProfileModal() {
         this.emitter.emit('openProfileModal', true);
+      }
+    },
+    computed: {
+      isLoggedIn() {
+        return this.store.getters.isLoggedIn
       }
     }
   }

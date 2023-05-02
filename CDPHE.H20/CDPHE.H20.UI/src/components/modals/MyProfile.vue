@@ -76,8 +76,7 @@
     },
      methods: {
         signOut() {
-            this.store.commit('changeLoggedInStatus', false);
-            
+            this.store.commit('removeJWT');
             this.$router.push("/Login")
         }
      }

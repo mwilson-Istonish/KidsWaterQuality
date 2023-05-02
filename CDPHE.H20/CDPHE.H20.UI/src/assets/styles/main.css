@@ -32,6 +32,11 @@ html, body {
     margin-right: 0.2rem;
 }
 
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value]::before,
+ .ql-snow .ql-picker.ql-size .ql-picker-item[data-value]::before { 
+    content: attr(data-value) !important;
+ }
+
 .h20-footer-icon:hover {
     color: #009add;
 }
@@ -108,6 +113,18 @@ label {
 
 .h20-modal-spacing {
     margin-top: 2rem !important
+}
+
+.btn-spacing {
+    margin-top:1rem
+}
+
+.tosDisplay{
+    border: 1px solid #bababa;
+    border-radius: 8px;
+    padding:0.2rem;
+    margin-top:0.5rem;
+    margin-bottom: 0.5rem
 }
 
 body {

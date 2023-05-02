@@ -1,3 +1,8 @@
+<script setup>
+import { RouterLink, RouterView } from 'vue-router'
+import AdminSettings from '@/components/modals/AdminSettings.vue'
+</script>
+
 <template>
     <div class="h20-dashboard-view h20-full-height">
         <div class="row h20-full-height">
@@ -40,6 +45,14 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-xl-2 h20-dashboard-col" v-show="this.store.getters.isAdmin">
+                                <div class="card h20-dashboard-card">
+                                    <div class="card-body text-center h20-dashboard-card-body" data-bs-toggle="modal" data-bs-target="#AdminSettingsModal">
+                                        Admin <br>Settings<br>
+                                        <i class="fa-solid fa-lock h20-dashboard-card-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
                         </div>      
                         <!-- <span v-on:click="incrementCount()">{{ $store.state.count }}</span> -->
                     </div>
@@ -47,11 +60,15 @@
             </div>
         </div>
     </div>
+<AdminSettings v-show="store.getters.isAdmin"/>
 </template>
 
 <script>
   import { useStore } from "vuex";
   export default {
+    components: {
+        AdminSettings
+    },
     data () {
       return {
         requestCount: 1,

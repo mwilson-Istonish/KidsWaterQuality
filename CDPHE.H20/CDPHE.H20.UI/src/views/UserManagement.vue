@@ -50,39 +50,15 @@
 </template>
 
 <script>
+  import UserManagementMixin from '../mixins/UserManagementMixin'
   export default {
+    mixins: [UserManagementMixin],
     data () {
-      return {
-        Users:
-        [
-            {
-                Email: "test@test.com",
-                Role: "Admin",
-                Status: "Revision Requested",
-                Module: "Water Quality",
-                Active: true,
-                LastSignIn: new Date().toLocaleString('en-US')
-            },
-            {
-                Email: "test123@test.com",
-                Role: "User",
-                Status: "Clear",
-                Module: "Water Quality",
-                Active: true,
-                LastSignIn: new Date().toLocaleString('en-US')
-            },
-            {
-                Email: "test321@test.com",
-                Role: "User",
-                Status: "Clear",
-                Module: "Water Quality",
-                Active: false,
-                LastSignIn: new Date().toLocaleString('en-US')
-            },
-        ]
-      }
+      return {}
     },
-      
+    async created() {
+        await this.getUsers();
+    },
     methods: {},
     computed: {
         getNumberWaiting() {

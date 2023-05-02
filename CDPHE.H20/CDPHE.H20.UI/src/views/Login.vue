@@ -15,7 +15,7 @@
                             </div>
                         </div>
                         <div>
-                            <button class="btn btn-md h20-btn" id="EmailSubmitBtn" data-bs-toggle="modal" data-bs-target="#Login2FAModal">Submit</button>
+                            <button class="btn btn-md h20-btn" id="EmailSubmitBtn" v-on:click="submitEmail()">Submit</button>
                         </div>
                     </div>
                 </div>
@@ -34,6 +34,16 @@
                         </div>
                         <div class="col-xl-2 text-right text-end">
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    </div>      
+                    <div class="row">
+                        <div class="col-xl-12 text-center">
+                            By signing in, you agree to the <a href="#" v-on:click="toggleTOSVisibility()">Terms of Service</a>.
+                        </div>
+                        <div class="col-xl-12">
+                            <div id="tos" class="tosDisplay" style="display: none">
+
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -61,7 +71,6 @@
 
 <script>
 import LoginMixin from '../mixins/LoginMixin'
-import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.js'
 import { useStore } from "vuex";
 export default {
     mixins: [LoginMixin],
@@ -72,35 +81,31 @@ export default {
             store: useStore()
         };
     },
-    created() {
-        this.getWeatherForecast();
+    async created() {
+        await this.getTOS();
+        $("#tos").html(this.tos)
     },
     methods: {
-        login() {
+        async submitEmail() {
+            await this.submitLoginEmail(this.email)
+            if(this.isCurrentUser) {
+                $("#Login2FAModal").modal('show')
+            }
+        },
+        async login() {
             var buttonEle = document.getElementById("CodeSubmitBtn");
             var errorMessageEle = document.getElementById("codeError");
             buttonEle.disabled = true;
             var loginSuccess = false;
-            var errorMsg = "";
+            var errorMsg = "Please provide a valid login code";
+
             if (this.loginCode) {
-                if (this.loginCode == "j") {
-                    loginSuccess = true;
-                }
-                else {
-                    errorMsg = "This login code is incorrect"
-                }
+                await this.submitToken(this.loginCode);
+                loginSuccess = this.store.getters.jwt != ""
             }
-            else {
-                errorMsg = "Please provide a valid login code"
-            }
-            this.getToken();
-            if (this.jwt = "") {
-                loginSuccess = false;
-            }
-            if (loginSuccess) {
-                var myModalEl = document.getElementById('Login2FAModal');
-                var modal = bootstrap.Modal.getInstance(myModalEl)
-                modal.hide();   
+
+            if (loginSuccess) {    
+                $("#Login2FAModal").modal('hide')
                 this.store.commit('changeLoggedInStatus', true)
                 this.$router.push("/Dashboard");
             }
@@ -108,6 +113,10 @@ export default {
                 errorMessageEle.innerText = errorMsg;
                 buttonEle.disabled = false;
             }
+        },
+        toggleTOSVisibility() {
+            var tos = $("#tos");
+            tos.slideToggle()
         }
     },
 }
