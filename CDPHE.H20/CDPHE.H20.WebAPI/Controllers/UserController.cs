@@ -55,9 +55,9 @@ namespace CDPHE.H20.WebAPI.Controllers
         // This method is an HTTP POST endpoint that sends a userGUID and a unique signin Token and returns a JWT or 401 if unauthorized"
         [HttpPost]
         [Route("login/{userguid}/{token}")]
-        public async Task<IActionResult> Login(string userguid, string token)
+        public async Task<IActionResult> Login(string email, string token)
         {
-            var userRole = await _userService.Login(userguid, token);
+            var userRole = await _userService.Login(email, token);
             if(userRole != null)
             {
                 TokenController tokenController = new TokenController(_configuration);

@@ -35,7 +35,7 @@ namespace CDPHE.H20.Data.Queries
         public static string Login()
         {
             DateTime expire = DateTime.Now.AddHours(1); // sets expiration date/time to 1 hour from current time
-            string sql = "SELECT [User].Id, [User].FirstName, [User].LastName, [User].Email, Role.Name AS Role FROM [User] INNER JOIN Role ON [User].RoleId = Role.Id where Guid = @Guid AND LoginKey = @Token AND LoginKeyExpiration < GETDATE() AND [User].IsActive = 1";
+            string sql = "SELECT [User].Id, [User].FirstName, [User].LastName, [User].Email, Role.Name AS Role FROM [User] INNER JOIN Role ON [User].RoleId = Role.Id where [User].Email = @Email AND LoginKey = @Token AND LoginKeyExpiration < GETDATE() AND [User].IsActive = 1";
             return sql;
         }
     }

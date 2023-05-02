@@ -113,13 +113,13 @@ namespace CDPHE.H20.Services
             
         }
 
-        public async Task<UserRole> Login(string userguid, string tempkey)
+        public async Task<UserRole> Login(string email, string tempkey)
         {
             var query = UserQuery.Login();
 
             using (var connection = _dbContext.CreateConnection())
             {
-                var userRole = await connection.QueryFirstOrDefaultAsync<UserRole>(query, new { Guid = userguid, Token = tempkey });
+                var userRole = await connection.QueryFirstOrDefaultAsync<UserRole>(query, new { Email = email, Token = tempkey });
                 return userRole;
             }
         }
