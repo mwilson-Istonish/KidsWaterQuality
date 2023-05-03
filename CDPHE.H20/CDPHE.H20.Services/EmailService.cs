@@ -145,7 +145,7 @@ namespace CDPHE.H20.Services
                     <img src=""https://cdphe.colorado.gov/sites/cdphe/files/logo.svg"" alt=""Your Company Logo"" class=""logo"">
                     <p class=""subject"">⚡Quick Login : Access Your Account Now!</p>
                     <p>Please use the follow token to login to the website</p>
-                    <p>" + token + "</p></div></body></html>```";
+                    <p style=""font-size:16pt:font-weight:bold;"">" + token + "</p></div></body></html>";
 
             return email;
         }
