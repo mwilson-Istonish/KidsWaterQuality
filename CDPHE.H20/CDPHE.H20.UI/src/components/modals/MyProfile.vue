@@ -17,25 +17,25 @@
                         <div class="col-xl-6">
                             <label>First Name</label>
                             <div class="input-group mb-3">
-                                <input v-model="firstName" type="text" class="form-control">
+                                <input v-model="this.store.getters.getUser.FirstName" type="text" class="form-control">
                             </div>
                         </div>
                         <div class="col-xl-6">
                             <label>Last Name</label>
                             <div class="input-group mb-3">
-                                <input v-model="lastName" type="text" class="form-control">
+                                <input v-model="this.store.getters.getUser.LastName" type="text" class="form-control">
                             </div>
                         </div>
                         <div class="col-xl-6">
                             <label>Email</label>
                             <div class="input-group mb-3">
-                                <input v-model="email" type="text" class="form-control">
+                                <input v-model="this.store.getters.getUser.Email" type="text" disabled class="form-control">
                             </div>
                         </div>
                         <div class="col-xl-6">
-                            <label>Created</label>
+                            <label>Role</label>
                             <div class="input-group mb-3">
-                                <input v-model="createdDate" disabled type="text" class="form-control">
+                                <input v-model="this.store.getters.getUserRole" disabled type="text" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -62,10 +62,6 @@
     data() {
         return {
             store: useStore(),
-            firstName: "John",
-            lastName: "Doe",
-            email: "johndoe@gmail.com",
-            createdDate: new Date().toLocaleString('en-US')
         }
     },
     created () {
@@ -73,6 +69,7 @@
         emitter.on('openProfileModal', (value) => {
             console.log('event fired', `value: ${value}`);
         });
+        console.log(this.store.getters.getUserRole)
     },
      methods: {
         signOut() {

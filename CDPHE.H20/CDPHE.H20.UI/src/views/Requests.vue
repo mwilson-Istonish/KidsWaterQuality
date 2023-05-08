@@ -5,7 +5,7 @@
                 <div class="card h20-full-height">
                     <div class="card-body" style="padding:2rem;">
                         <div class="row">
-                            <div class="col-lg-9" style="font-size: 20px">
+                            <div class="col-lg-9" style="font-size: 20px; margin-bottom:1rem">
                                 <div>
                                     <span :class="{'text-danger': getNumberWaiting != 0}" style="font-weight:600; font-size:22px">
                                         {{ getNumberWaiting }}
@@ -13,28 +13,22 @@
                                     request{{ getNumberWaiting != 1 ? "s" : "" }} waiting
                                 </div>
                             </div>
-                            <div class="col-lg-3">
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="basic-addon1"><i class="fa-solid fa-magnifying-glass"></i></span>
-                                    <input type="text" class="form-control" placeholder="search requests...">
-                                </div>
-                            </div>
                         </div>
-                        <table class="table">
+                        <table class="table" id="RequestsTable">
                             <thead>
                                 <tr>
-                                    <th scope="col">School #</th>
+                                    <th scope="col">Facility</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col">Module</th>
-                                    <th scope="col">Updated</th>
+                                    <th scope="col">Total Cost</th>
+                                    <th scope="col">Created</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="request in this.Requests" class="h20-request-row" v-on:click="getRequestDetails(1)" data-bs-toggle="modal" data-bs-target="#RequestDetailsModal">
-                                    <td>{{ request.SchoolNumber }}</td>
+                                <tr v-for="request in this.requests" class="h20-request-row" v-on:click="getRequestDetails(request.Id)" data-bs-toggle="modal" data-bs-target="#RequestDetailsModal">
+                                    <td>{{ request.Facility }}</td>
                                     <td :class="{'text-danger': request.Status == 'Attention Needed', 'text-success': request.Status == 'In Progress'}">{{ request.Status }}</td>
-                                    <td>{{ request.Module }}</td>
-                                    <td>{{ request.Updated }}</td>
+                                    <td>{{ request.TotalCost }}</td>
+                                    <td>{{ new Date(request.CreatedAt).toLocaleDateString('en-US') }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -45,7 +39,7 @@
     </div>
     <div class="modal modal-lg" tabindex="-1" id="RequestDetailsModal">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="max-height:700px; overflow-y: auto;">
+            <div class="modal-content">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col">
@@ -62,7 +56,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                     </div>
-                    <div class="row h20-modal-spacing">
+                    <div class="row h20-modal-spacing" style="max-height:650px; overflow-y: auto;">
                         <div class="col">
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="facility" role="tabpanel" aria-labelledby="facility-tab">
@@ -231,32 +225,15 @@
   export default {
     mixins: [RequestsMixin],
     async created() {
-        await GetRequestsByProviderID();
+        await this.GetRequestsByProviderID(this.store.getters.getUser.Id);
+        $('#RequestsTable').dataTable({
+            "order": [],
+            responsive: true
+        });
     },
     data () {
       return {
         store: useStore(),
-        Requests:
-        [
-            {
-                SchoolNumber: 12345,
-                Status: "Attention Needed",
-                Module: "Water Quality",
-                Updated: new Date().toLocaleString('en-US')
-            },
-            {
-                SchoolNumber: 54321,
-                Status: "In Progress",
-                Module: "Water Quality",
-                Updated: new Date().toLocaleString('en-US')
-            },
-            {
-                SchoolNumber: 67890,
-                Status: "Complete",
-                Module: "Water Quality",
-                Updated: new Date().toLocaleString('en-US')
-            },
-        ],
       }
     },
       
@@ -267,9 +244,7 @@
             this.store.commit('updateCount', 0)
         },
         async getRequestDetails(requestId) {
-            console.log("in method: " + requestId)
-            await this.getRequestDetailsAPI(1);
-            console.log(this.currentRequestDetails.createdAt)
+            await this.getRequestDetailsAPI(requestId);
         },
         getOperator(operatorCode) {
             return operatorCode == 1 ? "< " : operatorCode == 2 ? "> " : "";
@@ -278,9 +253,9 @@
     computed: {
         getNumberWaiting() {
             var numberWaiting = 0;
-            for (var i = 0; i < this.Requests.length; i++){
-                numberWaiting += (this.Requests[i].Status == "Attention Needed") ? 1 : 0
-            }
+            // for (var i = 0; i < this.Requests.length; i++){
+            //     numberWaiting += (this.Requests[i].Status == "Attention Needed") ? 1 : 0
+            // }
             return numberWaiting;
         }
     }

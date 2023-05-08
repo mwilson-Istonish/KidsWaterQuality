@@ -4,6 +4,7 @@ export default {
     data() {
       return { 
         requestCount: 0,
+        requests: [],
         currentRequestDetails: {
           createdAt: "",
           details: [],
@@ -22,7 +23,6 @@ export default {
           await axios
           .get(this.API_URL + "v1/request/" + requestId)
           .then((response) => {
-              console.log(response)
               this.currentRequestDetails = response.data;
               return this.currentRequestDetails;
           })
@@ -30,11 +30,18 @@ export default {
               console.log(error)
           })
       },
-      async getProviderRequestsAPI(id) {
-
+      async GetRequestsByProviderID(id) {
+          await axios
+          .get(this.API_URL + "v1/request/provider/" + id)
+          .then((response) => {
+              this.requests = response.data;
+              return this.requests;
+          })
+          .catch((error) => {
+              console.log(error)
+          })
       },
       getRequestCount() {
-        console.log("in other mixin")
         axios
             .get(this.API_URL)
             .then((response) => {

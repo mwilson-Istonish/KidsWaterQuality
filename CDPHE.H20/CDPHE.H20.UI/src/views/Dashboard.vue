@@ -12,9 +12,9 @@ import AdminSettings from '@/components/modals/AdminSettings.vue'
                         <div class="row">
                             <div class="col-xl-2 h20-dashboard-col">
                                 <div class="card h20-dashboard-card">
-                                    <span v-show="$store.state.count > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:16px">
+                                    <!-- <span v-show="$store.state.count > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:16px">
                                         {{$store.state.count}}
-                                    </span>
+                                    </span> -->
                                     <div class="card-body text-center h20-dashboard-card-body" v-on:click="navigateToPage('/Requests')">
                                         My <br>Requests<br>
                                         <i class="fa-solid fa-envelope h20-dashboard-card-icon"></i>

@@ -11,7 +11,7 @@ export default {
         store: useStore(),
         htmlBody: {
             body: ""
-        }
+        },
        }
     },
     methods: {
@@ -29,17 +29,15 @@ export default {
         },
         async submitToken(token) {
             await axios
-            .post(this.API_URL + "v1/user/login/" + "73CBCC71-EA67-433D-884F-202C0C24E7A4/" + token)
+            .post(this.API_URL + "v1/user/login/" + this.emailProvided + "/" + token)
             .then((response) => {
                 this.store.commit('updateJWT', response.data.Value)
             })
         },
         async getTOS() {
-            console.log("in get")
             await axios
             .get(this.API_URL + "v1/termsofservice")
             .then((response) => {
-                console.log(response)
                 this.tos = response.data;
             })
         },
