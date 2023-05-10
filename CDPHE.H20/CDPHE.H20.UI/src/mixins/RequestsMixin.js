@@ -5,6 +5,7 @@ export default {
       return { 
         requestCount: 0,
         requests: [],
+        remedialActions: [],
         currentRequestDetails: {
           createdAt: "",
           details: [],
@@ -41,6 +42,17 @@ export default {
               console.log(error)
           })
       },
+      async GetRemedialActions() {
+        await axios
+        .get(this.API_URL + "v1/request/remedialactions/")
+        .then((response) => {
+            this.remedialActions = response.data;
+            return this.remedialActions;
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    },
       getRequestCount() {
         axios
             .get(this.API_URL)

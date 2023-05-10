@@ -146,27 +146,58 @@
                                                     <div class="col-xl-6">
                                                         <label>Initial Sample Date</label>
                                                         <div class="input-group mb-3">
-                                                            <input @input="detail.initialSampleDate = $event.target.value" :value="new Date(detail.initialSampleDate).toISOString().slice(0, 10)" type="date" class="form-control">
+                                                            <input @input="detail.initialSampleDate = $event.target.value" :value="new Date(detail.initialSampleDate).toISOString().slice(0, 10)" disabled type="date" class="form-control">
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-6">
                                                         <label>Sample Result (ppb)</label>
                                                         <div class="input-group mb-3">
-                                                            <input @input="detail.initialSampleResult = $event.target.value" :value="getOperator(detail.sampleResultOperator) + detail.initialSampleResult" type="text" class="form-control">
+                                                            <input @input="detail.initialSampleResult = $event.target.value" disabled :value="getOperator(detail.sampleResultOperator) + detail.initialSampleResult" type="text" class="form-control">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-xl-6">
-                                                        <label>Flush Sample Date</label>
+                                                        <label>Confirmation Sample Date</label>
                                                         <div class="input-group mb-3">
-                                                            <input @input="detail.flushSampleDate = $event.target.value" :value="new Date(detail.flushSampleDate).toISOString().slice(0, 10)" type="date" class="form-control">
+                                                            <input @input="detail.flushSampleDate = $event.target.value" :value="new Date(detail.flushSampleDate).toISOString().slice(0, 10)" disabled type="date" class="form-control">
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-6">
-                                                        <label>Sample Result (ppb)</label>
+                                                        <label>Confirmation Result (ppb)</label>
                                                         <div class="input-group mb-3">
-                                                            <input @input="detail.flushSampleResult = $event.target.value" :value="getOperator(detail.flushResultOperator) + detail.flushSampleResult" type="text" class="form-control">
+                                                            <input @input="detail.flushSampleResult = $event.target.value" disabled :value="getOperator(detail.flushResultOperator) + detail.flushSampleResult" type="text" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xl-6">
+                                                        <label>Remedial Action</label>
+                                                        <div class="input-group mb-3">
+                                                            <select class="form-select">
+                                                                <option value="" disabled selected>Select a Remedial Action</option>
+
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-6">
+                                                        <label>Not to Exceed</label>
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" disabled class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xl-6">
+                                                        <label>Expected Materials Cost</label>
+                                                        <div class="input-group mb-3">
+                                                            <input type="number" :value="detail.materialCost" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-6">
+                                                        <label>Expected Labor Cost</label>
+                                                        <div class="input-group mb-3">
+                                                            <input type="number" :value="detail.materialLabor" class="form-control">
                                                         </div>
                                                     </div>
                                                 </div><hr>
@@ -202,8 +233,8 @@
                                             </div>
                                             <div class="row" style="margin-top:1rem">
                                                 <div class="col text-end">
-                                                    <button class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>&nbsp;
-                                                    <button class="btn btn-primary" data-bs-dismiss="modal" v-on:click="updateRequests()">Submit</button>
+                                                    <button class="btn btn-secondary">Upload W-9</button>&nbsp;
+                                                    <button class="btn btn-primary" data-bs-dismiss="modal" disabled v-on:click="updateRequests()">Submit</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -230,6 +261,7 @@
             "order": [],
             responsive: true
         });
+        await this.GetRemedialActions();
     },
     data () {
       return {

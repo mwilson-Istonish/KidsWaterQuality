@@ -8,15 +8,17 @@
                         <div class="text-center" style="font-weight:600; font-size:22px">
                             Welcome to the Water Quality Portal
                         </div>
-                        <div style="margin-top:2rem; font-size: 18px">
-                            <label>Enter your email to log in or create an account:</label>
-                            <div class="input-group mb-3">
-                                <input v-model="email" type="text" class="form-control" placeholder="example@email.com">
+                        <form @submit="submitEmail()">
+                            <div style="margin-top:2rem; font-size: 18px">
+                                <label>Enter your email to log in:</label>
+                                <div class="input-group mb-3">
+                                    <input v-model="email" type="text" class="form-control" placeholder="example@email.com">
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <button class="btn btn-md h20-btn" id="EmailSubmitBtn" v-on:click="submitEmail()">Submit</button>
-                        </div>
+                            <div>
+                                <button class="btn btn-md h20-btn" id="EmailSubmitBtn" type="button" v-on:click="submitEmail()">Submit</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -35,7 +37,12 @@
                         <div class="col-xl-2 text-right text-end">
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                    </div>      
+                    </div>
+                    <div class="row">
+                        <div class="col text-center">
+                            Please provide the login code that was sent to your email.
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-xl-12 text-center">
                             By signing in, you agree to the <a href="#" v-on:click="toggleTOSVisibility()">Terms of Service</a>.
@@ -44,11 +51,6 @@
                             <div id="tos" class="tosDisplay" style="display: none">
 
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col text-center">
-                            Please provide the login code that was sent to your email
                         </div>
                     </div>
                     <div class="row h20-modal-spacing">
@@ -87,6 +89,7 @@ export default {
     },
     methods: {
         async submitEmail() {
+            event.preventDefault();
             await this.submitLoginEmail(this.email)
             if(this.isCurrentUser) {
                 $("#Login2FAModal").modal('show')

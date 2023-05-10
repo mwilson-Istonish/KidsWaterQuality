@@ -17,25 +17,25 @@
                         <div class="col-xl-6">
                             <label>First Name</label>
                             <div class="input-group mb-3">
-                                <input v-model="this.store.getters.getUser.FirstName" type="text" class="form-control">
+                                <input :value="this.store.getters.getUser ? this.store.getters.getUser.FirstName : ''" disabled type="text" class="form-control">
                             </div>
                         </div>
                         <div class="col-xl-6">
                             <label>Last Name</label>
                             <div class="input-group mb-3">
-                                <input v-model="this.store.getters.getUser.LastName" type="text" class="form-control">
+                                <input :value="this.store.getters.getUser ? this.store.getters.getUser.LastName : ''" disabled type="text" class="form-control">
                             </div>
                         </div>
                         <div class="col-xl-6">
                             <label>Email</label>
                             <div class="input-group mb-3">
-                                <input v-model="this.store.getters.getUser.Email" type="text" disabled class="form-control">
+                                <input :value="this.store.getters.getUser ? this.store.getters.getUser.Email : ''" type="text" disabled class="form-control">
                             </div>
                         </div>
                         <div class="col-xl-6">
                             <label>Role</label>
                             <div class="input-group mb-3">
-                                <input v-model="this.store.getters.getUserRole" disabled type="text" class="form-control">
+                                <input :value="this.store.getters.getUserRole" disabled type="text" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -69,7 +69,6 @@
         emitter.on('openProfileModal', (value) => {
             console.log('event fired', `value: ${value}`);
         });
-        console.log(this.store.getters.getUserRole)
     },
      methods: {
         signOut() {
