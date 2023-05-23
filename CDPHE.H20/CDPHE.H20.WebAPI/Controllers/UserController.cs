@@ -68,6 +68,8 @@ namespace CDPHE.H20.WebAPI.Controllers
             }
             else
             {
+                // Check MySQL Database for Record
+                // var isNew = await CheckMainDB(email);
                 // Returns an HTTP 401 response if the user is not valid
                 return Unauthorized();
             }
@@ -84,5 +86,11 @@ namespace CDPHE.H20.WebAPI.Controllers
         public void Delete(int id)
         {
         }
+
+        //public async bool CheckMainDB(string email)
+        //{
+        //    // If the Email exists in MySQL (MainDB), create a User Record in the SQL DB
+        //    // var newUser = await _userService.NewUser(email);
+        //}
     }
 }

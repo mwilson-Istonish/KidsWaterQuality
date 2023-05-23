@@ -38,5 +38,11 @@ namespace CDPHE.H20.Data.Queries
             string sql = "SELECT [User].Id, [User].FirstName, [User].LastName, [User].Email, Role.Name AS Role FROM [User] INNER JOIN Role ON [User].RoleId = Role.Id where [User].Email = @Email AND LoginKey = @Token AND LoginKeyExpiration < GETDATE() AND [User].IsActive = 1";
             return sql;
         }
+
+        public static string NewUser()
+        {
+            string sql = "";
+            return sql;
+        }
     }
 }

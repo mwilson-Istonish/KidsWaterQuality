@@ -5,6 +5,7 @@
     [FirstName]          VARCHAR (50)     NOT NULL,
     [LastName]           VARCHAR (50)     NOT NULL,
     [Email]              VARCHAR (250)    NOT NULL,
+    [Phone]              VARCHAR (20)     NULL,
     [LoginKey]           VARCHAR (6)      NULL,
     [LoginKeyExpiration] DATETIME         NULL,
     [FailedAttempts]     INT              CONSTRAINT [DF_User_FailedAttempts] DEFAULT ((0)) NULL,
@@ -17,6 +18,8 @@
     CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED ([id] ASC),
     CONSTRAINT [FK_User_Role] FOREIGN KEY ([RoleId]) REFERENCES [dbo].[Role] ([Id])
 );
+
+
 
 
 

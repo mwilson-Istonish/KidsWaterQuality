@@ -74,5 +74,8 @@
     <Build Include="Security\cdpheadmin.sql" />
     <Build Include="Security\cdpheadmin_1.sql" />
     <Build Include="Security\RoleMemberships.sql" />
+    <Build Include="dbo\Tables\WebFile.sql" />
+    <Build Include="dbo\Tables\UserAccountRequest.sql" />
+    <Build Include="dbo\Tables\TermsOfService.sql" />
   </ItemGroup>
 </Project>

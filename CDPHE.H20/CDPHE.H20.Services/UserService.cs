@@ -21,11 +21,13 @@ namespace CDPHE.H20.Services
         void DeleteUser(int id);
         public Task<bool> EmailUser(string email);
         public Task<UserRole> Login(string userguid, string token);
+        // public Task<UserRole> NewUser(string email);
     }
 
     public class UserService : IUserService
     {
         private readonly DapperContext _dbContext = new DapperContext();
+        private readonly DapperMySQLContext _dbMySQLContext = new DapperMySQLContext();
 
         public UserService()
         {
@@ -124,5 +126,16 @@ namespace CDPHE.H20.Services
             }
         }
 
+        //public async Task<UserRole> NewUser(string email)
+        //{
+        //    var query = UserQuery.Login();  // TEST
+        //    string tempkey = "ABC";         // TEST
+
+        //    using (var connection = _dbMySQLContext.CreateConnection())
+        //    {
+        //        var userRole = await connection.QueryFirst<UserRole>(query, new { Email = email, Token = tempkey });
+        //        return userRole;
+        //    }
+        //}
     }
 }
