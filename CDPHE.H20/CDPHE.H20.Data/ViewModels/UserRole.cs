@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -32,10 +32,20 @@ namespace CDPHE.H20.Data.ViewModels
         [EmailAddress(ErrorMessage = "Invalid email address format")]
         public string Email { get; set; }
 
+        // PHone number of the user
+        [JsonProperty("phone")]
+        [Required]
+        [EmailAddress(ErrorMessage = "Invalid phone number")]
+        public string Phone { get; set; }
+
         // Role assigned to the user
         [JsonProperty("role")]
         [Required]
         [StringLength(50, MinimumLength = 1, ErrorMessage = "Role should be between 1 and 50 characters")]
         public string Role { get; set; }
+
+        [JsonProperty("wqcid")]
+        [StringLength(10, MinimumLength = 1, ErrorMessage = "WQCID should be between 1 and 10 characters")]
+        public string WQCID { get; set; }
     }
 }

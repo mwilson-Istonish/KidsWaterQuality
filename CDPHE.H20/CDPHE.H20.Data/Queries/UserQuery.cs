@@ -41,7 +41,19 @@ namespace CDPHE.H20.Data.Queries
 
         public static string NewUser()
         {
-            string sql = "";
+            string sql = "Select lastname, firstname, email, phone, facility_orgcode as wqcid from contacts where email = @Email AND type = 'FAC'";
+            return sql;
+        }
+
+        public static string AddNewProvider()
+        {
+            string sql = "Insert INTO [User] (roleid, firstname, lastname, email, wqcid, phone, createdby, createdat, updatedby, lastupdated, isactive) Values (@RoleId, @FirstName, @LastName, @Email, @WQCID, @Phone, @CreatedBy, @CreatedAt, @UpdatedBy, @LastUpdated, @IsActive)";            
+            return sql;
+        }
+
+        public static string GetFacility()
+        {
+            string sql = "SELECT f.orgname as name, f.orgtype as type, f.orgcode as wqcid, a.address1, a.address2, a.address3, a.city, a.state, a.zip FROM facilities f INNER JOIN addresses a ON f.orgcode = a.facilities_orgcode Where f.orgcode = @WQCID";
             return sql;
         }
     }

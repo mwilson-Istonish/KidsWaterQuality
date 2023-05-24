@@ -16,12 +16,10 @@ namespace CDPHE.H20.Services
     {
         public Task<IEnumerable<User>> GetAllUsers();
         public Task<User> GetUserById(int id);
-        void AddUser(User user);
-        void UpdateUser(User user);
-        void DeleteUser(int id);
         public Task<bool> EmailUser(string email);
         public Task<UserRole> Login(string userguid, string token);
-        // public Task<UserRole> NewUser(string email);
+        public Task<string> AddUser(UserRole newUser);
+        public Task<FacilityVM> GetFacility(string wqcid);
     }
 
     public class UserService : IUserService
@@ -63,13 +61,29 @@ namespace CDPHE.H20.Services
             int randomNumber = random.Next(0, 1000000); // Generate a random number between 0 and 999999.
             string sixDigitNumber = randomNumber.ToString("D6"); // Format the number with leading zeroes to make it 6 digits long.
 
-
             using (var connection = _dbContext.CreateConnection())
             {
                 var response = await connection.QueryAsync<int>(query, new { Email = email});
-                if(response != null)
+                if(response.Count() > 0)
                 {
                     isValidEmail = true;
+                }
+                else
+                {
+                    // Check Main DB
+                    var _newUser = await NewUser(email);
+                    if(_newUser != null)
+                    {
+                        var result = AddUser(_newUser);
+                        if(result.Result == "Success")
+                        {
+                            isValidEmail = true;
+                        }
+                        else
+                        {
+                            isValidEmail = false;
+                        }
+                    }
                 }
             }
 
@@ -100,19 +114,33 @@ namespace CDPHE.H20.Services
             return isValidEmail;
         }
 
-        public void AddUser(User user)
+        public async Task<string> AddUser(UserRole user)
         {
-            
+            string message = "Success";
+            var query = UserQuery.AddNewProvider();
+            try
+            {
+                using (var connection = _dbContext.CreateConnection())
+                {
+                    var newRow = await connection.ExecuteAsync(query, new { RoleId = 1, FirstName = user.FirstName, LastName = user.LastName, Email = user.Email, WQCID = user.WQCID, Phone = user.Phone, CreatedBy = 1, CreatedAt = DateTime.Now, UpdatedBy = 1, LastUpdated = DateTime.Now, IsActive = 1 });
+                }
+            }
+            catch (Exception)
+            {
+                message = "Failed";
+            }
+
+            return message;
         }
 
-        public void UpdateUser(User user)
+        public async Task<FacilityVM> GetFacility(string wqcid)
         {
-            
-        }
-
-        public void DeleteUser(int id)
-        {
-            
+            var query = UserQuery.GetFacility();
+            using (var connection = _dbMySQLContext.CreateConnection())
+            {
+                var facility = await connection.QueryFirstAsync<FacilityVM>(query, new { Wqcid = wqcid });
+                return facility;
+            }
         }
 
         public async Task<UserRole> Login(string email, string tempkey)
@@ -126,16 +154,15 @@ namespace CDPHE.H20.Services
             }
         }
 
-        //public async Task<UserRole> NewUser(string email)
-        //{
-        //    var query = UserQuery.Login();  // TEST
-        //    string tempkey = "ABC";         // TEST
+        public async Task<UserRole> NewUser(string email)
+        {
+            var query = UserQuery.NewUser();  
 
-        //    using (var connection = _dbMySQLContext.CreateConnection())
-        //    {
-        //        var userRole = await connection.QueryFirst<UserRole>(query, new { Email = email, Token = tempkey });
-        //        return userRole;
-        //    }
-        //}
+            using (var connection = _dbMySQLContext.CreateConnection())
+            {
+                var userRole = connection.Query<UserRole>(query, new { Email = email });
+                return userRole.FirstOrDefault();
+            }
+        }
     }
 }

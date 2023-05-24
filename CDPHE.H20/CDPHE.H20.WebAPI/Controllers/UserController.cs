@@ -60,6 +60,7 @@ namespace CDPHE.H20.WebAPI.Controllers
             var userRole = await _userService.Login(email, token);
             if(userRole != null)
             {
+                
                 TokenController tokenController = new TokenController(_configuration);
                 var jwt = await tokenController.GetToken(userRole);
                 
@@ -68,29 +69,25 @@ namespace CDPHE.H20.WebAPI.Controllers
             }
             else
             {
-                // Check MySQL Database for Record
-                // var isNew = await CheckMainDB(email);
                 // Returns an HTTP 401 response if the user is not valid
                 return Unauthorized();
             }
         }
 
         // PUT api/<UserController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpGet("facility/{wqcid}")]
+        public async Task<IActionResult> GetFacility(string wqcid)
         {
+            var facility = await _userService.GetFacility(wqcid);
+            return Ok(facility);
         }
 
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+
         }
 
-        //public async bool CheckMainDB(string email)
-        //{
-        //    // If the Email exists in MySQL (MainDB), create a User Record in the SQL DB
-        //    // var newUser = await _userService.NewUser(email);
-        //}
     }
 }
