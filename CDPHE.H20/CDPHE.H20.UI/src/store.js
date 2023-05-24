@@ -4,19 +4,15 @@ import Vuex from 'vuex'
 const store = new Vuex.Store({
   state: {
     title: "Vue Store",
-    isLoggedIn: false,
     userRole: "Admin",
-    waterForKidsRoles: ["WQ Infrastructure Staff", "WQ Fiscal Staff", "Facility User"],
-    userManagementRoles: ["User Approver"],
+    waterForKidsRoles: ["WQ Staff", "WQ Fiscal", "Provider"],
+    userManagementRoles: ["User Manager"],
     count: 1,
     jwtToken: JSON.parse(localStorage.getItem("jwt")),
   },
   mutations: {
     increment (state, incrementNum) {
       state.count = state.count + incrementNum;
-    },
-    changeLoggedInStatus (state, status) {
-        state.isLoggedIn = status;
     },
     updateCount (state, newCount) {
         state.count = newCount;
@@ -62,8 +58,8 @@ const store = new Vuex.Store({
       }
       return null
     },
-    getUserRole(state) {
-      return state.user ? state.user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] : null;
+    getUserRole(state, getters) {
+      return getters.getUser ? getters.getUser['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] : null;
     },
     isLoggedIn(state) {
       return state.jwtToken != null;

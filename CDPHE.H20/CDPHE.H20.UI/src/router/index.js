@@ -46,6 +46,15 @@ const router = createRouter({
       component: () => import('../views/Requests.vue')
     },
     {
+      path: '/AccountCreationRequests',
+      name: 'AccountCreationRequests',
+      meta: {
+        allowAnonymous: false,
+        authRequired: false,
+      },
+      component: () => import('../views/AccountCreationRequests.vue')
+    },
+    {
       path: '/UserManagement',
       name: 'UserManagement',
       meta: {
@@ -116,6 +125,9 @@ router.beforeEach((to, from, next) => {
   if(!to.meta.allowAnonymous && jwt == null) {
     console.log("router unauthenticated")
     unauthenticated()
+  }
+  if(to.name == "Requests" && store.getters.getUserRole == "User Manager"){
+    router.push('/AccountCreationRequests')
   }
 
   return next()

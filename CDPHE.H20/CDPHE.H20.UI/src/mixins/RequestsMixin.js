@@ -5,6 +5,8 @@ export default {
       return { 
         requestCount: 0,
         requests: [],
+        accountCreationRequests: [],
+        roles: [],
         remedialActions: [],
         currentRequestDetails: {
           createdAt: "",
@@ -16,31 +18,41 @@ export default {
           totalCost: 0,
           totalCostLabor: 0,
           totalCostMaterials: 0
-        }
+        },
+        currentRequestFiles: [],
        }
     },
     methods: {
       async getRequestDetailsAPI(requestId) {
-          await axios
-          .get(this.API_URL + "v1/request/" + requestId)
-          .then((response) => {
-              this.currentRequestDetails = response.data;
-              return this.currentRequestDetails;
-          })
-          .catch((error) => {
-              console.log(error)
-          })
+        await axios
+        .get(this.API_URL + "v1/request/" + requestId)
+        .then((response) => {
+            this.currentRequestDetails = response.data;
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    
+        await axios
+        .get(this.API_URL + "v1/file/" + requestId)
+        .then((response) => {
+            this.currentRequestFiles = response.data;
+            console.log(this.currentRequestFiles)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
       },
       async GetRequestsByProviderID(id) {
-          await axios
-          .get(this.API_URL + "v1/request/provider/" + id)
-          .then((response) => {
-              this.requests = response.data;
-              return this.requests;
-          })
-          .catch((error) => {
-              console.log(error)
-          })
+        await axios
+        .get(this.API_URL + "v1/request/provider/" + id)
+        .then((response) => {
+            this.requests = response.data;
+            return this.requests;
+        })
+        .catch((error) => {
+            console.log(error)
+        })
       },
       async GetRemedialActions() {
         await axios
@@ -52,14 +64,54 @@ export default {
         .catch((error) => {
             console.log(error)
         })
-    },
-      getRequestCount() {
-        axios
-            .get(this.API_URL)
-            .then((response) => {
-                console.log(response)
-                requestCount = response.data.requestCount
-            })
+      },   
+      async getAccountRequests() {
+        await axios
+        .get(this.API_URL + "v1/request/accountcreationrequests/")
+        .then((response) => {
+            console.log(response.data)
+            this.accountCreationRequests = response.data;
+            return this.remedialActions;
+        })
+        .catch((error) => {
+            console.log(error)
+        })
       },
+      async getRoles() {
+        await axios
+        .get(this.API_URL + "v1/role/roles/")
+        .then((response) => {
+            this.roles = response.data;
+            return this.roles;
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+      },
+      async uploadFile(fileData, fileType, extension, requestId) {
+        const url = `${this.API_URL}v1/file/filetype/${fileType}/requestId/${requestId}/ext/${extension}`;  
+        try {
+            const response = await axios.post(url, fileData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+            });
+            return response.data;
+        } catch (error) {
+            console.log(error);
+        }
+      },
+      async getFiles(requestId) {
+        await axios
+        .get(this.API_URL + "v1/file/" + requestId)
+        .then((response) => {
+            this.currentRequestFiles = response.data;
+            console.log(this.currentRequestFiles)
+            return this.roles;
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+      }
     },
 }

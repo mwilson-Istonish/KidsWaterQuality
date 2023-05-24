@@ -174,16 +174,16 @@
                                                     <div class="col-xl-6">
                                                         <label>Remedial Action</label>
                                                         <div class="input-group mb-3">
-                                                            <select class="form-select">
-                                                                <option value="" disabled selected>Select a Remedial Action</option>
-
+                                                            <select class="form-select" v-model="detail.remedialActionId">
+                                                                <option value="0" disabled selected>Select a Remedial Action</option>
+                                                                <option v-for="remedialAction in this.remedialActions" :value="remedialAction.Id">{{ remedialAction.Name }}</option>
                                                             </select>
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-6">
                                                         <label>Not to Exceed</label>
                                                         <div class="input-group mb-3">
-                                                            <input type="text" disabled class="form-control">
+                                                            <input type="text" :value="this.getNotToExceedValue(detail.remedialActionId)" disabled class="form-control">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -230,15 +230,41 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="row" style="margin-top:1rem">
-                                                <div class="col text-end">
-                                                    <button class="btn btn-secondary">Upload W-9</button>&nbsp;
-                                                    <button class="btn btn-primary" data-bs-dismiss="modal" disabled v-on:click="updateRequests()">Submit</button>
+                                            </div><hr>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h4>W-9</h4>
+                                                    <div v-for="file in this.currentRequestFiles.filter(singleFile => singleFile.FileType === 'W-9')">
+                                                        <a style="font-size:18px" :href="file.Url">{{ file.Name }}</a>
+                                                    </div>
+                                                    <input type="file" id="newW9" class="btn btn-secondary" placeholder="Upload W9">&nbsp;<button class="btn btn-primary" disabled type="button" id="newW9Button" v-on:click="uploadW9()">Upload</button>
+                                                </div>
+                                            </div><hr>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h4>Invoice</h4>
+                                                    <div v-for="file in this.currentRequestFiles.filter(singleFile => singleFile.FileType === 'Invoice')">
+                                                        <a style="font-size:18px" :href="file.Url">{{ file.Name }}</a>
+                                                    </div> 
+                                                    <input type="file" id="newInvoice" class="btn btn-secondary" placeholder="Upload Invoice">&nbsp;<button class="btn btn-primary" id="newInvoiceButton" disabled type="button" v-on:click="uploadInvoice()">Upload</button>
+                                                </div>
+                                            </div><hr>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h4>Receipt</h4>   
+                                                    <div v-for="file in this.currentRequestFiles.filter(singleFile => singleFile.FileType === 'Receipt')">
+                                                        <a style="font-size:18px" :href="file.Url">{{ file.Name }}</a>
+                                                    </div>     
+                                                    <input type="file" id="newReceipt" class="btn btn-secondary" placeholder="Upload Receipt">&nbsp;<button class="btn btn-primary" id="newReceiptButton" disabled type="button" v-on:click="uploadReceipt()">Upload</button>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-xl-1"></div>
+                                        <div class="row" style="margin-top:1rem">
+                                            <div class="col text-end">
+                                                <button class="btn btn-primary" data-bs-dismiss="modal" disabled v-on:click="updateRequests()">Submit</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -255,6 +281,44 @@
   import { useStore } from "vuex";
   export default {
     mixins: [RequestsMixin],
+    mounted() {
+        document.getElementById('newW9').addEventListener('input', (e) => {
+            const files = e.target.files || e.dataTransfer.files;
+            const file = files[0];
+            this.newW9Extension = file.name.split('.').pop();
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                this.newW9 = reader.result.split(',')[1].toString();
+            };
+            var buttonEle = document.getElementById("newW9Button");
+            buttonEle.disabled = false;
+        })
+        document.getElementById('newInvoice').addEventListener('input', (e) => {
+            const files = e.target.files || e.dataTransfer.files;
+            const file = files[0];
+            this.newInvoiceExtension = file.name.split('.').pop();
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                this.newInvoice = reader.result.split(',')[1].toString();
+            };
+            var buttonEle = document.getElementById("newInvoiceButton");
+            buttonEle.disabled = false;
+        })
+        document.getElementById('newReceipt').addEventListener('input', (e) => {
+            const files = e.target.files || e.dataTransfer.files;
+            const file = files[0];       
+            this.newReceiptExtension = file.name.split('.').pop();
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                this.newReceipt = reader.result.split(',')[1].toString();
+            };
+            var buttonEle = document.getElementById("newReceiptButton");
+            buttonEle.disabled = false;
+        })
+    },
     async created() {
         await this.GetRequestsByProviderID(this.store.getters.getUser.Id);
         $('#RequestsTable').dataTable({
@@ -266,6 +330,12 @@
     data () {
       return {
         store: useStore(),
+        newW9: "",
+        newW9Extension: "",
+        newInvoice: "",
+        newInvoiceExtension: "",
+        newReceipt: "",
+        newReceiptExtension: "",
       }
     },
       
@@ -280,16 +350,52 @@
         },
         getOperator(operatorCode) {
             return operatorCode == 1 ? "< " : operatorCode == 2 ? "> " : "";
-        }    
+        },
+        async uploadW9() {
+            await this.uploadFile(this.newW9.toString(), "W9", this.newW9Extension, this.currentRequestDetails.id);
+            this.newW9 = "";
+            this.newW9Extension = "";
+            await this.getRequestDetailsAPI(this.currentRequestDetails.id)
+            var buttonEle = document.getElementById("newW9Button");
+            buttonEle.disabled = true;
+            var inputEle = document.getElementById("newW9");
+            inputEle.value = ''
+        },
+        async uploadInvoice() {
+            await this.uploadFile(this.newInvoice.toString(), "invoice", this.newInvoiceExtension, this.currentRequestDetails.id);
+            this.newInvoice = "";
+            this.newInvoiceExtension = "";
+            await this.getRequestDetailsAPI(this.currentRequestDetails.id)
+            var buttonEle = document.getElementById("newInvoiceButton");
+            buttonEle.disabled = true;
+            var inputEle = document.getElementById("newInvoice");
+            inputEle.value = ''
+        },
+        async uploadReceipt() {
+            await this.uploadFile(this.newReceipt.toString(), "receipt", this.newReceiptExtension, this.currentRequestDetails.id);
+            this.newReceipt = "";
+            this.newReceiptExtension = "";
+            await this.getRequestDetailsAPI(this.currentRequestDetails.id)
+            var buttonEle = document.getElementById("newReceipt");
+            buttonEle.disabled = true;
+            var inputEle = document.getElementById("newW9");
+            inputEle.value = ''
+        },
     },
     computed: {
+        getNotToExceedValue(){
+            return (id) => {
+                const selectedRemedialAction = this.remedialActions.find(obj => obj.Id === id);
+                return selectedRemedialAction.NotToExceed;
+            };
+        },
         getNumberWaiting() {
             var numberWaiting = 0;
             // for (var i = 0; i < this.Requests.length; i++){
             //     numberWaiting += (this.Requests[i].Status == "Attention Needed") ? 1 : 0
             // }
             return numberWaiting;
-        }
+        },
     }
   }
 </script>

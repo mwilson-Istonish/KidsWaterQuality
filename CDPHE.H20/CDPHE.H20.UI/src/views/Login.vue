@@ -8,13 +8,14 @@
                         <div class="text-center" style="font-weight:600; font-size:22px">
                             Welcome to the Water Quality Portal
                         </div>
-                        <form @submit="submitEmail()">
+                        <form id="loginForm" @submit="submitEmail()">
                             <div style="margin-top:2rem; font-size: 18px">
-                                <label>Enter your email to log in:</label>
+                                <label>Enter your email to log in or request an account:</label>
                                 <div class="input-group mb-3">
                                     <input v-model="email" type="text" class="form-control" placeholder="example@email.com">
                                 </div>
                             </div>
+                            <div style="display: none; margin-bottom:1rem" class="text-danger" id="emailError"></div>
                             <div>
                                 <button class="btn btn-md h20-btn" id="EmailSubmitBtn" type="button" v-on:click="submitEmail()">Submit</button>
                             </div>
@@ -69,6 +70,46 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-md" tabindex="-1" id="LoginNoUserModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col text-center">
+                            <form id="accountRequestForm" @submit="requestAccount()">
+                                An account could not be found for the provided email.
+                                <div class="row">
+                                    <div class="col-12" style="margin-bottom:1rem">
+                                        Would you like to request an account from CDPHE?<br>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="input-group mb-3">
+                                            <input v-model="firstName" type="text" class="form-control" placeholder="First Name"/>
+                                        </div>    
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="input-group mb-3">
+                                            <input v-model="lastName" type="text" class="form-control" placeholder="Last Name"/>
+                                        </div>    
+                                    </div>
+                                    <div class="col">
+                                        <div class="input-group mb-3">
+                                            <input v-model="email" type="text" class="form-control" placeholder="Email">
+                                        </div>           
+                                    </div>
+                                </div>
+                                <div id="RequestAccountError" class="text-danger" style="display: none"></div>
+                                <div id="RequestAccountSuccess" class="text-success" style="display: none">An account creation request has been sent. <br>You will receive an email upon approval.</div>
+                                <br>
+                                <button type="button" class="btn btn-primary" id="requestAccountBtn" v-on:click="requestAccount()">Request Account</button>&nbsp;
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -79,6 +120,8 @@ export default {
     data() {
         return {
             email: "",
+            firstName: "",
+            lastName: "",
             loginCode: "",
             store: useStore()
         };
@@ -90,9 +133,20 @@ export default {
     methods: {
         async submitEmail() {
             event.preventDefault();
-            await this.submitLoginEmail(this.email)
-            if(this.isCurrentUser) {
-                $("#Login2FAModal").modal('show')
+            var emailError = $("#emailError");
+            if(this.email && this.validateEmail(this.email)){
+                emailError.hide()
+                await this.submitLoginEmail(this.email)
+                if(this.isCurrentUser) {
+                    $("#Login2FAModal").modal('show')
+                }
+                else {
+                    $("#LoginNoUserModal").modal('show')
+                }
+            }
+            else {
+                emailError.text("Please provide a valid email")
+                emailError.show()
             }
         },
         async login() {
@@ -104,22 +158,42 @@ export default {
 
             if (this.loginCode) {
                 await this.submitToken(this.loginCode);
-                loginSuccess = this.store.getters.jwt != ""
+                loginSuccess = this.store.getters.isLoggedIn
             }
 
             if (loginSuccess) {    
                 $("#Login2FAModal").modal('hide')
-                this.store.commit('changeLoggedInStatus', true)
                 this.$router.push("/Dashboard");
             }
             else {
-                errorMessageEle.innerText = errorMsg;
+                errorMessageEle.text(errorMsg);
                 buttonEle.disabled = false;
             }
         },
         toggleTOSVisibility() {
             var tos = $("#tos");
             tos.slideToggle()
+        },
+        async requestAccount() {  
+            event.preventDefault();   
+            var buttonEle = document.getElementById("requestAccountBtn");
+            buttonEle.disabled = true;
+            var errorMsg = $("#RequestAccountError");
+            var successMsg = $("#RequestAccountSuccess");
+            if(this.firstName && this.lastName && this.email && this.validateEmail(this.email)) {
+                await this.requestUserAccount(this.firstName, this.lastName, this.email);
+                successMsg.show()
+                errorMsg.hide()
+            }
+            else {
+                errorMsg.text("Please provide a valid first name, last name, and email address.")
+                errorMsg.show() 
+                buttonEle.disabled = false;
+            }
+        },
+        validateEmail(supposedEmail) {
+            var emailRegex = /^[^@]+@[^@]+\.[^@]+$/
+            return emailRegex.test(supposedEmail)
         }
     },
 }

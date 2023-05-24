@@ -76,9 +76,7 @@ import AdminSettings from '@/components/modals/AdminSettings.vue'
       }
     },
       
-    created() {
-        this.store.commit('changeLoggedInStatus', true)
-    },
+    created() {},
 
     methods: {
         navigateToPage(page) {

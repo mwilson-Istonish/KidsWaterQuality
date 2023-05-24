@@ -76,8 +76,13 @@ html, body {
 }
 
 .h20-request-row:hover {
-    background-color: #ececeb;
+    background-color: #d9d9d9;
     cursor: pointer;
+}
+
+.btn-primary{
+    background-color: #009add !important;
+    border-color: #009add !important;
 }
 
 .modal-dialog-centered {
