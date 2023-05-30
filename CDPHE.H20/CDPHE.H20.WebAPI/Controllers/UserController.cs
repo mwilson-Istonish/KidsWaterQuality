@@ -75,11 +75,11 @@ namespace CDPHE.H20.WebAPI.Controllers
         }
 
         // PUT api/<UserController>/5
-        [HttpGet("facility/{wqcid}")]
-        public async Task<IActionResult> GetFacility(string wqcid)
+        [HttpGet("profile/{wqcid}")]
+        public async Task<IActionResult> GetProfile(string wqcid)
         {
-            var facility = await _userService.GetFacility(wqcid);
-            return Ok(facility);
+            var profile = await _userService.GetProfile(wqcid);
+            return Ok(profile);
         }
 
         // DELETE api/<UserController>/5

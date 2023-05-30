@@ -4,8 +4,10 @@ using CDPHE.H20.Data.Queries;
 using CDPHE.H20.Data.ViewModels;
 using Dapper;
 using Microsoft.Identity.Client;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +21,7 @@ namespace CDPHE.H20.Services
         public Task<bool> EmailUser(string email);
         public Task<UserRole> Login(string userguid, string token);
         public Task<string> AddUser(UserRole newUser);
-        public Task<FacilityVM> GetFacility(string wqcid);
+        public Task<string> GetProfile(string wqcid);
     }
 
     public class UserService : IUserService
@@ -101,7 +103,9 @@ namespace CDPHE.H20.Services
                         
                         // Send Email
                         EmailService emailService = new EmailService();
-                        var response = await emailService.SendLoginEmail(email, sixDigitNumber);
+                        
+                        // !! Removed for Testing !!
+                        // var response = await emailService.SendLoginEmail(email, sixDigitNumber);
                     }
                     catch (Exception ex)
                     {
@@ -133,14 +137,61 @@ namespace CDPHE.H20.Services
             return message;
         }
 
-        public async Task<FacilityVM> GetFacility(string wqcid)
+        public async Task<string> GetProfile(string wqcid)
         {
-            var query = UserQuery.GetFacility();
+            ProfileDetails profile = new ProfileDetails();
+            var query = UserQuery.GetProfile();
+            string town = string.Empty;
+
             using (var connection = _dbMySQLContext.CreateConnection())
             {
-                var facility = await connection.QueryFirstAsync<FacilityVM>(query, new { Wqcid = wqcid });
-                return facility;
+                var facility = await connection.QueryFirstAsync<FacilityDetails>(query, new { Wqcid = wqcid });
+                profile.WQCID = wqcid;
+                profile.Address.Address1 = facility.Address1;
+                profile.Address.Address2 = facility.Address2;
+                profile.Address.Address3 = facility.Address3;
+                profile.Address.City = facility.City;
+                profile.Address.State = facility.State;
+                profile.Address.Zip = facility.Zip;
+
+                profile.Name = facility.Name;   
+                profile.Type = facility.Type;
+                profile.Town = facility.Town;
+                town = profile.Town;
             }
+
+            var query2 = UserQuery.GetRateTable();
+            query2 = query2.Replace("Town", town);
+
+            using (var connection = _dbContext.CreateConnection())
+            {
+                var rateTable = await connection.QueryAsync<RateTable>(query2);
+                string hourlyRate = "0.00";
+                int i = 0;
+                foreach (var rate in rateTable)
+                {
+                    RateTable _rateTable = new RateTable();
+                    _rateTable.Id = rate.Id;
+                    _rateTable.Action = rate.Action;
+                    _rateTable.Duration = rate.Duration;
+                    if (i == 0)
+                    {
+                        hourlyRate = String.Format("{0:C2}", (Convert.ToDecimal(rate.Hourly) * Convert.ToDecimal(1.00)));
+                        _rateTable.Hourly = hourlyRate;
+                        _rateTable.NotToExceed = String.Format("{0:C2}", (Convert.ToDecimal(0.00)));
+                        i++;
+                    }
+                    else
+                    {
+                        _rateTable.NotToExceed = String.Format("{0:C2}", (Convert.ToDecimal(rate.Hourly) * Convert.ToDecimal(1.00)));
+                        _rateTable.Hourly = hourlyRate;
+                    }
+                    
+                    profile.RateTable.Add(_rateTable);
+                }
+            }
+
+            return JsonConvert.SerializeObject(profile);
         }
 
         public async Task<UserRole> Login(string email, string tempkey)

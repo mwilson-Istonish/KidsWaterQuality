@@ -51,9 +51,15 @@ namespace CDPHE.H20.Data.Queries
             return sql;
         }
 
-        public static string GetFacility()
+        public static string GetProfile()
         {
-            string sql = "SELECT f.orgname as name, f.orgtype as type, f.orgcode as wqcid, a.address1, a.address2, a.address3, a.city, a.state, a.zip FROM facilities f INNER JOIN addresses a ON f.orgcode = a.facilities_orgcode Where f.orgcode = @WQCID";
+            string sql = "SELECT f.orgname as name, f.orgtype as type, f.orgcode as wqcid, f.town, a.address1 as Address1, a.address2, a.address3, a.city, a.state, a.zip FROM facilities f INNER JOIN addresses a ON f.orgcode = a.facilities_orgcode Where f.orgcode = @WQCID";
+            return sql;
+        }
+
+        public static string GetRateTable()
+        {
+            string sql = "  Select Id, Action, Duration, Town as Hourly from RateTable where Id > 0 ORDER BY Id DESC";
             return sql;
         }
     }
