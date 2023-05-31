@@ -348,3 +348,11 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+CDPHE.H20/CDPHE.H20.Data/Context/DapperContext.cs
+
+CDPHE.H20/CDPHE.H20.Data/Context/DapperMySQLContext.cs
+
+CDPHE.H20/CDPHE.H20.Services/FileService.cs
+
+CDPHE.H20/CDPHE.H20.Services/EmailService.cs

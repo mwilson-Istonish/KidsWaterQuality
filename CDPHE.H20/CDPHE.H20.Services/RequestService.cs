@@ -63,7 +63,7 @@ namespace CDPHE.H20.Services
                     {
                         requestAndDetails.Details.Add(_details);
                         requestAndDetails.TotalCostMaterials = (decimal)(_details.MaterialCost + requestAndDetails.TotalCostMaterials);
-                        requestAndDetails.TotalCostLabor = (decimal)(_details.MaterialLabor + requestAndDetails.TotalCostLabor);
+                        requestAndDetails.TotalCostLabor = (decimal)(_details.laborCost + requestAndDetails.TotalCostLabor);
                         requestAndDetails.TotalCost = requestAndDetails.TotalCostMaterials + requestAndDetails.TotalCostLabor;
                     }
                 }

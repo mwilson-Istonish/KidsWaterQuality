@@ -108,8 +108,8 @@ namespace CDPHE.H20.Data.ViewModels
         [JsonProperty("materialCost")]
         public decimal? MaterialCost { get; set; }
 
-        [JsonProperty("materialLabor")]
-        public decimal? MaterialLabor { get; set; }
+        [JsonProperty("laborCost")]
+        public decimal? laborCost { get; set; }
     }
 
 }

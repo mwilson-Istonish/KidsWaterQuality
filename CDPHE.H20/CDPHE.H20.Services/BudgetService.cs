@@ -43,17 +43,17 @@ namespace CDPHE.H20.Services
                         {
                             case "Complete":
                                 budgetVM.Spent += _detail.MaterialCost;
-                                budgetVM.Spent += _detail.MaterialLabor;
+                                budgetVM.Spent += _detail.LaborCost;
                                 break;
 
                             case "New":
                                 budgetVM.Requested += _detail.MaterialCost;
-                                budgetVM.Requested += _detail.MaterialLabor;
+                                budgetVM.Requested += _detail.LaborCost;
                                 break;
 
                             case "In Progress":
                                 budgetVM.Approved += _detail.MaterialCost;
-                                budgetVM.Approved += _detail.MaterialLabor;
+                                budgetVM.Approved += _detail.LaborCost;
                                 break;
                         }
                         

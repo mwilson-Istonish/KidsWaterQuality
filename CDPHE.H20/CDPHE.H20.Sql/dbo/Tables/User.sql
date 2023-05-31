@@ -2,6 +2,7 @@
     [id]                 INT              IDENTITY (1, 1) NOT NULL,
     [Guid]               UNIQUEIDENTIFIER CONSTRAINT [DF_Users_Guid] DEFAULT (newid()) NOT NULL,
     [RoleId]             INT              NULL,
+    [WQCID]              VARCHAR (20)     NULL,
     [FirstName]          VARCHAR (50)     NOT NULL,
     [LastName]           VARCHAR (50)     NOT NULL,
     [Email]              VARCHAR (250)    NOT NULL,
@@ -18,6 +19,8 @@
     CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED ([id] ASC),
     CONSTRAINT [FK_User_Role] FOREIGN KEY ([RoleId]) REFERENCES [dbo].[Role] ([Id])
 );
+
+
 
 
 

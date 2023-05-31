@@ -98,12 +98,3 @@ namespace CDPHE.H20.WebAPI.Controllers
         }
     }
 }
-
-
-//SELECT Request.Id, Facility.Name, Facility.Address1, Facility.Address2, Facility.City, Facility.State, Facility.ZipCode, Facility.WQCID, [User].FirstName, [User].LastName, RequestDetail.Id AS RequestDetailId, RequestDetail.SampleName,
-//                         RequestDetail.InitialSampleDate, RequestDetail.SampleResultOperator, RequestDetail.InitialSampleResult, RequestDetail.FlushSampleDate, RequestDetail.FlushResultOperator, RequestDetail.FlushSampleResult,
-//                         RequestDetail.RemedialActionId, RequestDetail.MaterialCost, RequestDetail.MaterialLabor, Request.CreatedAt
-//FROM            Request LEFT OUTER JOIN
-//                         Facility ON Request.FacilityId = Facility.Id LEFT OUTER JOIN
-//                         [User] ON Request.Id = [User].id LEFT OUTER JOIN
-//                         RequestDetail ON Request.Id = RequestDetail.RequestId

@@ -79,5 +79,11 @@ namespace CDPHE.H20.Data.Queries
             string sql = "  Select Id, Action, Duration, Town as Hourly from RateTable where Id > 0 ORDER BY Id DESC";
             return sql;
         }
+
+        public static string GetFacility()
+        {
+            string sql = "Select ";
+            return sql;
+        }
     }
 }

@@ -146,6 +146,21 @@ namespace CDPHE.H20.Services
             var query = UserQuery.GetProfile();
             string town = string.Empty;
 
+            // Check to see if the Facility exists in the MSSQL db
+            var existingFacility = GetFacility(wqcid);
+
+            // If not exists, get info from MySQL db
+            if(existingFacility != null)
+            {
+
+            }
+            else
+            {
+
+            }
+
+            // Copy Facility data to MSSQL db
+
             using (var connection = _dbMySQLContext.CreateConnection())
             {
                 var facility = await connection.QueryFirstAsync<FacilityDetails>(query, new { Wqcid = wqcid });
@@ -234,6 +249,13 @@ namespace CDPHE.H20.Services
                 var userRole = connection.Query<UserRole>(query, new { Email = email });
                 return userRole.FirstOrDefault();
             }
+        }
+
+        public async Task<Facility> GetFacility(string wqcid)
+        {
+            Facility facility = new Facility();
+
+            return facility;
         }
     }
 }
