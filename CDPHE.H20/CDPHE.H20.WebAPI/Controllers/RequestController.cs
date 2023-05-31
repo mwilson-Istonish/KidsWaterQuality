@@ -1,4 +1,5 @@
-﻿using CDPHE.H20.Services;
+﻿using CDPHE.H20.Data.ViewModels;
+using CDPHE.H20.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
@@ -41,6 +42,34 @@ namespace CDPHE.H20.WebAPI.Controllers
         {
             var request = await _requestService.GetRequestsByProvider(id);
             return Ok(request);
+        }
+
+        [HttpGet("remedialactions")]
+        public async Task<IActionResult> GetRemedialActions()
+        {
+            var remedialActions = await _requestService.GetRemedialActions();
+            return Ok(remedialActions);
+        }
+
+        [HttpGet("accountcreationrequests")]
+        public async Task<IActionResult> GetAccountCreationRequests()
+        {
+            var accountCreationRequests = await _requestService.GetAccountCreationRequests();
+            return Ok(accountCreationRequests);
+        }
+
+        [HttpPost("uploadw9")]
+        public async Task<IActionResult> UploadW9([FromBody]FileDataVM fileData)
+        {
+            var base64 = fileData.Base64Data;
+            return Ok();
+        }
+
+        [HttpGet("budget")]
+        public async Task<IActionResult> GetBudget()
+        {
+            var budget = await _requestService.GetBudget();
+            return Ok(budget);
         }
 
         // POST api/<RequestController>

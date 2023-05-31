@@ -31,10 +31,10 @@ namespace CDPHE.H20.Services
 
         public FileService() 
         {
-            baseFolder = "";
-            bucketName = "";
-            string awsAccessKey = "";
-            string awsSecretKey = "";
+            baseFolder = "ServiceRequests"; 
+            bucketName = "cdphe-dev"; 
+            string awsAccessKey = "AKIAUGNZNL4SIG3JCSXL"; 
+            string awsSecretKey = "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";
             client = new AmazonS3Client(awsAccessKey, awsSecretKey, RegionEndpoint.USWest1);
         }
 
@@ -94,9 +94,13 @@ namespace CDPHE.H20.Services
             {
                 return "Invoice";
             }
-            else
+            else if(inputName.ToLower().IndexOf("receipt") > -1)
             {
                 return "Receipt";
+            }
+            else
+            {
+                return "W-9";
             }
         }
 

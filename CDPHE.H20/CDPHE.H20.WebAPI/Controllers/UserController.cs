@@ -1,4 +1,5 @@
-﻿using CDPHE.H20.Services;
+﻿using CDPHE.H20.Data.Models;
+using CDPHE.H20.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
@@ -54,7 +55,7 @@ namespace CDPHE.H20.WebAPI.Controllers
 
         // This method is an HTTP POST endpoint that sends a userGUID and a unique signin Token and returns a JWT or 401 if unauthorized"
         [HttpPost]
-        [Route("login/{userguid}/{token}")]
+        [Route("login/{email}/{token}")]
         public async Task<IActionResult> Login(string email, string token)
         {
             var userRole = await _userService.Login(email, token);
@@ -72,6 +73,24 @@ namespace CDPHE.H20.WebAPI.Controllers
                 // Returns an HTTP 401 response if the user is not valid
                 return Unauthorized();
             }
+        }
+
+        //HTTP POST endpoint that creates an account creation request if one is not already present
+        [HttpPost]
+        [Route("requestaccount/{firstName}/{lastName}/{email}")]
+        public async Task<IActionResult> RequestAccount(string firstName, string lastName, string email)
+        {
+            var userAccountRequest = new UserAccountRequest()
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Email = email,
+                RequestDate = DateTime.Now,
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString()
+            };
+
+            await _userService.AddUserAccountRequest(userAccountRequest);
+            return Ok();
         }
 
         // PUT api/<UserController>/5

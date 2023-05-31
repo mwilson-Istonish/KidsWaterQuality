@@ -102,6 +102,9 @@ namespace CDPHE.H20.Data.ViewModels
         [JsonProperty("remedialAction")]
         public string? RemedialAction { get; set; }
 
+        [JsonProperty("remedialActionId")]
+        public int? RemedialActionID { get; set; }
+
         [JsonProperty("materialCost")]
         public decimal? MaterialCost { get; set; }
 

@@ -14,7 +14,7 @@ namespace CDPHE.H20.Data.Context
 
         public DapperContext()
         {
-            _connectionString = "Server=rds.amazonaws.com;Database=;User Id=;Password=;TrustServerCertificate=True;";
+            _connectionString = "Server=istonish-cdphe-dev-1.cd13cvdflbu2.us-east-2.rds.amazonaws.com;Database=cdpheh20;User Id=cdpheadmin;Password=dDtbrxYSKU75M!;TrustServerCertificate=True;";
         }
         public IDbConnection CreateConnection()
             => new SqlConnection(_connectionString);

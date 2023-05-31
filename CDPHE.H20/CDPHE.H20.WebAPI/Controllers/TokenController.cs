@@ -37,6 +37,7 @@ namespace CDPHE.H20.WebAPI.Controllers
                     new Claim("Email", userRole.Email),
                     new Claim("FirstName", userRole.FirstName),
                     new Claim("LastName", userRole.LastName),
+                    new Claim("WQCID", userRole.WQCID),
                     new Claim(ClaimTypes.Role, userRole.Role)
                 };
 

@@ -62,6 +62,11 @@ namespace CDPHE.H20.WebAPI
                 };
             });
 
+            builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
+            {
+                builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+            }));
+
             //Add AWS Lambda Support
             builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
@@ -80,6 +85,7 @@ namespace CDPHE.H20.WebAPI
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CDPHE H2O v1"));
             }
 
+            app.UseCors("corsapp");
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();

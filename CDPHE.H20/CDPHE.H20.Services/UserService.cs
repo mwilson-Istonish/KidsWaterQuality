@@ -21,6 +21,7 @@ namespace CDPHE.H20.Services
         public Task<bool> EmailUser(string email);
         public Task<UserRole> Login(string userguid, string token);
         public Task<string> AddUser(UserRole newUser);
+        public Task AddUserAccountRequest(UserAccountRequest userAccountRequest);
         public Task<string> GetProfile(string wqcid);
     }
 
@@ -66,8 +67,10 @@ namespace CDPHE.H20.Services
             using (var connection = _dbContext.CreateConnection())
             {
                 var response = await connection.QueryAsync<int>(query, new { Email = email});
-                if(response.Count() > 0)
-                {
+
+                var responseList = response.ToList();
+                if (responseList.Any()) 
+                { 
                     isValidEmail = true;
                 }
                 else
@@ -202,6 +205,23 @@ namespace CDPHE.H20.Services
             {
                 var userRole = await connection.QueryFirstOrDefaultAsync<UserRole>(query, new { Email = email, Token = tempkey });
                 return userRole;
+            }
+        }
+
+        public async Task AddUserAccountRequest(UserAccountRequest userAccountRequest)
+        {
+            var query = UserQuery.AddUserAccountRequest();
+            using (var connection = _dbContext.CreateConnection())
+            {
+                // create request. SQL query will handle spam
+                try
+                {
+                    await connection.ExecuteAsync(query, userAccountRequest);
+                }
+                catch (Exception ex)
+                {
+                    string error = ex.ToString();
+                }
             }
         }
 

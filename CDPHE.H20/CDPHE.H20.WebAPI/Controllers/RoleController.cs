@@ -1,18 +1,29 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CDPHE.H20.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace CDPHE.H20.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("v1/role")]
     [ApiController]
     public class RoleController : ControllerBase
     {
-        // GET: api/<RoleController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        public IConfiguration _configuration;
+        private RoleService _roleService;
+
+        public RoleController(IConfiguration configuration)
         {
-            return new string[] { "value1", "value2" };
+            _configuration = configuration;
+            _roleService = new RoleService();
+        }
+
+        [HttpGet("roles")]
+        public async Task<IActionResult> GetRoles()
+        {
+            var roles = await _roleService.GetRoles();
+            return Ok(roles);
         }
 
         // GET api/<RoleController>/5

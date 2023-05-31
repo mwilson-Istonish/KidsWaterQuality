@@ -38,5 +38,18 @@ namespace CDPHE.H20.Data.Queries
             return sql;
         }
 
+
+        public static string GetUserAccountRequests()
+        {
+            string sql = "SELECT * FROM UserAccountRequest";
+            return sql;
+        }
+
+        public static string GetBudget() 
+        {
+            string sql = "SELECT TOP 1 * FROM Budget";
+            return sql;
+        }
+
     }
 }
