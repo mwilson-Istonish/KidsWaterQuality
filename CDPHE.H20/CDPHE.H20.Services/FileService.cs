@@ -33,8 +33,8 @@ namespace CDPHE.H20.Services
         {
             baseFolder = "ServiceRequests"; 
             bucketName = "cdphe-dev"; 
-            string awsAccessKey = "AKIAUGNZNL4SIG3JCSXL"; 
-            string awsSecretKey = "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";
+            string awsAccessKey = ""; 
+            string awsSecretKey = "";
             client = new AmazonS3Client(awsAccessKey, awsSecretKey, RegionEndpoint.USWest1);
         }
 

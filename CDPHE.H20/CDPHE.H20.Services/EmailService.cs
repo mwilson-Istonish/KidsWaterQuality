@@ -26,8 +26,8 @@ namespace CDPHE.H20.Services
         public async Task<string> SendEmailAsync(List<string> toAddresses,
         string bodyHtml, string bodyText, string subject)
         {
-            string accessKey = "AKIAUGNZNL4SLB27KJ54";
-            string secretKey = "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";
+            string accessKey = "";
+            string secretKey = "";
             string msg = "{ Success }";
 
             // Create an instance of the Amazon Simple Email Service V2 client

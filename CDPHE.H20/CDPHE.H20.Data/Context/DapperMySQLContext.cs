@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CDPHE.H20.Data.Models;
 using MySqlConnector;
 namespace CDPHE.H20.Data.Context
 {
@@ -13,7 +14,7 @@ namespace CDPHE.H20.Data.Context
 
         public DapperMySQLContext()
         {
-            _connectionString = "";
+            _connectionString = @"";
         }
 
         public IDbConnection CreateConnection() 

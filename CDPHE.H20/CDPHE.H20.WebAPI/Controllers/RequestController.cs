@@ -44,6 +44,13 @@ namespace CDPHE.H20.WebAPI.Controllers
             return Ok(request);
         }
 
+        [HttpGet("getallrequests")]
+        public async Task<IActionResult> GetAllRequests()
+        {
+            var requests = await _requestService.GetAllRequests();
+            return Ok(requests);
+        }
+
         [HttpGet("remedialactions")]
         public async Task<IActionResult> GetRemedialActions()
         {

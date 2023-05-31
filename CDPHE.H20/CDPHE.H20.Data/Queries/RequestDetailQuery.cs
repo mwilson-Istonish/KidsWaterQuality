@@ -21,6 +21,12 @@ namespace CDPHE.H20.Data.Queries
             return sql;
         }
 
+        public static string GetRequests()
+        {
+            string sql = "SELECT Request.Id AS Id, Facility.Name as Facility, [User].FirstName + ' ' + [User].LastName AS Provider, [User].Email, Request.CreatedAt, Request.Status FROM Request INNER JOIN Facility ON Request.FacilityId = Facility.Id INNER JOIN [User] ON Request.UserId = [User].id";
+            return sql;
+        }
+
         public static string GetRequestTotalCost()
         {
             string sql = "SELECT Sum(RequestDetail.MaterialCost) + Sum(RequestDetail.MaterialLabor) as TotalCost FROM Request INNER JOIN RequestDetail ON Request.Id = RequestDetail.RequestId Where RequestId = @RequestId";

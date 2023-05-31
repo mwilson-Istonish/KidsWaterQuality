@@ -79,6 +79,26 @@ namespace CDPHE.H20.Services
             using (var connection = _dbContext.CreateConnection())
             {
                 var _requests = await connection.QueryAsync<RequestsVM>(query, new { Id = id });
+
+                foreach (var _request in _requests)
+                {
+                    decimal totalCost = GetTotalCostByRequestId(_request.Id).Result;
+                    _request.TotalCost = totalCost.ToString();
+                    requests.Add(_request);
+                }
+            }
+
+            return requests;
+
+        }
+        
+        public async Task<List<RequestsVM>> GetAllRequests()
+        {
+            List<RequestsVM> requests = new List<RequestsVM>();
+            var query = RequestDetailQuery.GetRequests();
+            using (var connection = _dbContext.CreateConnection())
+            {
+                var _requests = await connection.QueryAsync<RequestsVM>(query);
                 
                 foreach (var _request in _requests)
                 {
