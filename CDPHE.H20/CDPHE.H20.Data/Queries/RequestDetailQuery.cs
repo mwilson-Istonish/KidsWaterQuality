@@ -32,5 +32,13 @@ namespace CDPHE.H20.Data.Queries
             string sql = "SELECT Sum(RequestDetail.MaterialCost) + Sum(RequestDetail.LaborCost) as TotalCost FROM Request INNER JOIN RequestDetail ON Request.Id = RequestDetail.RequestId Where RequestId = @RequestId";
             return sql;
         }
+
+        
+
+        public static string InsertNewRequestDetail()
+        {
+            string sql = "INSERT INTO RequestDetail(RequestId,SampleName,InitialSampleDate,SampleResultOperator,InitialSampleResult,FlushSampleDate,FlushResultOperator,FlushSampleResult,RemedialActionId,ExpectedMaterialCost,ExpectedLaborCost,ActualMaterialCost,ActualLaborCost,ConfirmationSampleResultDate,ConfirmationSampleResultOperator,ConfirmationSampleResult,InHouseLabor,CreatedBy,CreatedAt,UpdatedBy,LastUpdated,IsActive) VALUES(@RequestId,@SampleName,@InitialSampleDate,@SampleResultOperator,@InitialSampleResult,@FlushSampleDate,@FlushResultOperator,@FlushSampleResult,@RemedialActionId,@ExpectedMaterialCost,@ExpectedLaborCost,@ActualMaterialCost,@ActualLaborCost,@ConfirmationSampleResultDate,@ConfirmationSampleResultOperator,@ConfirmationSampleResult,@InHouseLabor,@CreatedBy,@CreatedAt,@UpdatedBy,@LastUpdated,@IsActive); Select @@Identity";
+            return sql;
+        }
     }
 }

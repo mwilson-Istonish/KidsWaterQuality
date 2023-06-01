@@ -22,7 +22,7 @@ namespace CDPHE.H20.Services
         public Task<UserRole> Login(string userguid, string token);
         public Task<string> AddUser(UserRole newUser);
         public Task AddUserAccountRequest(UserAccountRequest userAccountRequest);
-        public Task<string> GetProfile(string wqcid);
+        public Task<string> GetProfile(string wqcid, int userId);
     }
 
     public class UserService : IUserService
@@ -140,46 +140,50 @@ namespace CDPHE.H20.Services
             return message;
         }
 
-        public async Task<string> GetProfile(string wqcid)
+        public async Task<string> GetProfile(string wqcid, int userId)
         {
             ProfileDetails profile = new ProfileDetails();
-            var query = UserQuery.GetProfile();
-            string town = string.Empty;
+            // var query = UserQuery.GetProfile();
+
+            FacilityDetails facilityInfo = new FacilityDetails();
 
             // Check to see if the Facility exists in the MSSQL db
-            var existingFacility = GetFacility(wqcid);
+            var existingFacility = await GetFacility(wqcid);
 
             // If not exists, get info from MySQL db
-            if(existingFacility != null)
+            if(existingFacility == null)
             {
+                var query3 = FacilityQuery.GetFacilityByWQCID();
+                using (var myconnection = _dbMySQLContext.CreateConnection())
+                {
+                    // Get New Facility from MySQL and...
+                    var facility = await myconnection.QueryFirstAsync<FacilityDetails>(query3, new { Wqcid = wqcid });
 
+                    // Insert into MSSQL
+                    FacilityService facilityService = new FacilityService();
+                    var newFacility = await facilityService.AddFacility(facility, userId);
+                    facilityInfo = facility;
+                    facilityInfo.Id = newFacility;
+                }
             }
             else
             {
-
+                facilityInfo = existingFacility;
             }
 
-            // Copy Facility data to MSSQL db
-
-            using (var connection = _dbMySQLContext.CreateConnection())
-            {
-                var facility = await connection.QueryFirstAsync<FacilityDetails>(query, new { Wqcid = wqcid });
-                profile.WQCID = wqcid;
-                profile.Address.Address1 = facility.Address1;
-                profile.Address.Address2 = facility.Address2;
-                profile.Address.Address3 = facility.Address3;
-                profile.Address.City = facility.City;
-                profile.Address.State = facility.State;
-                profile.Address.Zip = facility.Zip;
-
-                profile.Name = facility.Name;   
-                profile.Type = facility.Type;
-                profile.Town = facility.Town;
-                town = profile.Town;
-            }
+            profile.WQCID = wqcid;
+            profile.Name = facilityInfo.Name;
+            profile.Town = facilityInfo.County;
+            profile.FacilityId = facilityInfo.Id;
+            profile.Address.Address1 = facilityInfo.Address1;
+            profile.Address.Address2 = facilityInfo.Address2;
+            profile.Address.Address3 = facilityInfo.Address3;
+            profile.Address.City = facilityInfo.City;
+            profile.Address.State = facilityInfo.State;
+            profile.Address.ZipCode = facilityInfo.ZipCode;
 
             var query2 = UserQuery.GetRateTable();
-            query2 = query2.Replace("Town", town);
+            query2 = query2.Replace("Town", "[" + profile.Town + "]");
 
             using (var connection = _dbContext.CreateConnection())
             {
@@ -251,11 +255,22 @@ namespace CDPHE.H20.Services
             }
         }
 
-        public async Task<Facility> GetFacility(string wqcid)
+        public async Task<FacilityDetails> GetFacility(string wqcid)
         {
-            Facility facility = new Facility();
-
-            return facility;
+            using (var connection = _dbContext.CreateConnection())
+            {
+                var query = FacilityQuery.GetFacilityById();
+                try
+                {
+                    var facility = await connection.QueryFirstOrDefaultAsync<FacilityDetails>(query, new { Id = wqcid });
+                    return facility;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.ToString());
+                }
+                
+            }
         }
     }
 }

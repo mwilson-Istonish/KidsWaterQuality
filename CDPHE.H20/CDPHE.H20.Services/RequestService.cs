@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using CDPHE.H20.Data.Models;
 using Azure.Core;
+using System.Diagnostics.Tracing;
 
 namespace CDPHE.H20.Services
 {
@@ -23,6 +24,8 @@ namespace CDPHE.H20.Services
         public Task<List<RemedialActionVM>> GetRemedialActions();
         public Task<List<UserAccountRequest>> GetAccountCreationRequests();
         public Task<Budget> GetBudget();
+        public Task<int> AddRequest(RequestAndDetails requestAndDetails);
+        public Task<int> AddRequestDetail(int requesetId, ReqDetails reqDetails);
     }
     public class RequestService : IRequestService
     {
@@ -44,7 +47,7 @@ namespace CDPHE.H20.Services
                     requestAndDetails.Id= _request.Id;
                     requestAndDetails.Status = _request.Status;
                     requestAndDetails.CreatedAt = _request.CreatedAt;
-                    requestAndDetails.Facility = _request.Facility;
+                    // requestAndDetails.Facility = _request.Facility;
                     requestAndDetails.Address1 = _request.Address1;
                     if (requestAndDetails.Address2 != null)
                     {
@@ -62,8 +65,8 @@ namespace CDPHE.H20.Services
                     foreach(var _details in _requestDetails)
                     {
                         requestAndDetails.Details.Add(_details);
-                        requestAndDetails.TotalCostMaterials = (decimal)(_details.MaterialCost + requestAndDetails.TotalCostMaterials);
-                        requestAndDetails.TotalCostLabor = (decimal)(_details.laborCost + requestAndDetails.TotalCostLabor);
+                        requestAndDetails.TotalCostMaterials = (decimal)(_details.ActualMaterialCost + requestAndDetails.TotalCostMaterials);
+                        requestAndDetails.TotalCostLabor = (decimal)(_details.ActualLaborCost + requestAndDetails.TotalCostLabor);
                         requestAndDetails.TotalCost = requestAndDetails.TotalCostMaterials + requestAndDetails.TotalCostLabor;
                     }
                 }
@@ -164,6 +167,59 @@ namespace CDPHE.H20.Services
             {
                 var budget = await connection.QueryAsync<Budget>(query);
                 return budget.First();
+            }
+        }
+
+        public Task<int> AddRequest(RequestAndDetails requestAndDetails)
+        {
+            // returns id of new request
+            var query = RequestQuery.InsertNewRequest();
+            using (var connection = _dbContext.CreateConnection())
+            {
+                var id = connection.Query<int>(query, new
+                {
+                    //UserId = requestAndDetails.UserId,
+                    //Status = requestAndDetails.Status,
+                    //FacilityId = requestAndDetails.Fac,
+                });
+                return Task.FromResult(id.First());
+            }
+        }
+
+        public Task<int> AddRequestDetail(int requestId, ReqDetails reqDetails)
+        {
+            // returns id of new request detail
+            var query = RequestDetailQuery.InsertNewRequestDetail();
+            using (var connection = _dbContext.CreateConnection())
+            {
+                var id = connection.Query<int>(query, new
+                {
+                    RequestId = requestId,
+                    SampleName = reqDetails.SampleName,
+                    InitialSampleDate = reqDetails.InitialSampleDate,
+                    SampleResultOperator = reqDetails.SampleResultOperator,
+                    InitialSampleResult = reqDetails.InitialSampleResult,
+                    FlushSampleDate = reqDetails.FlushSampleDate,
+                    FlushResultOperator = reqDetails.FlushResultOperator,
+                    FlushSampleResult = reqDetails.FlushSampleResult,
+                    RemedialActionId = reqDetails.RemedialActionId,
+                    ExpectedMaterialCost = reqDetails.ExpectedMaterialCost,
+                    ExpectedLaborCost = reqDetails.ExpectedLaborCost,
+                    // Values for Actual intentionally set to Expected for ease of totalling costs
+                    ActualMaterialCost = reqDetails.ExpectedMaterialCost,
+                    ActualLaborCost = reqDetails.ExpectedLaborCost,
+                    ConfirmationSampleResultDate = reqDetails.ConfirmationSampleResultDate,
+                    ConfirmationSampleResultOperator = reqDetails.ConfirmationSampleResultOperator,
+                    ConfirmationSampleResult = reqDetails.ConfirmationSampleResult,
+                    InHouseLabor = reqDetails.InHouseLabor,
+                    CreatedBy = 1,
+                    CreatedAt = DateTime.Now,
+                    UpdatedBy = 1,
+                    LastUpdated = DateTime.Now,
+                    IsActive = 1
+                });
+
+                return (Task<int>)id;
             }
         }
     }

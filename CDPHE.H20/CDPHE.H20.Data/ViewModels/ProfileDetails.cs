@@ -9,6 +9,8 @@ namespace CDPHE.H20.Data.ViewModels
 {
     public class ProfileDetails
     {
+        [JsonProperty("facilityId")]
+        public int FacilityId { get; set; }
         [JsonProperty("wqcid")]
         public string WQCID { get; set; }
 
@@ -30,6 +32,8 @@ namespace CDPHE.H20.Data.ViewModels
 
     public class FacilityDetails
     {
+        [JsonProperty("id")]
+        public int Id { get; set; }
         [JsonProperty("wqcid")]
         public string WQCID { get; set; }
 
@@ -39,8 +43,8 @@ namespace CDPHE.H20.Data.ViewModels
         [JsonProperty("type")]
         public string Type { get; set; }
 
-        [JsonProperty("town")]
-        public string Town { get; set; }    // Town == County
+        [JsonProperty("county")]
+        public string County { get; set; }   
 
         [JsonProperty("address1")]
         public string Address1 { get; set; }
@@ -57,8 +61,8 @@ namespace CDPHE.H20.Data.ViewModels
         [JsonProperty("state")]
         public string State { get; set; }
 
-        [JsonProperty("zip")]
-        public string Zip { get; set; }
+        [JsonProperty("zipCode")]
+        public string ZipCode { get; set; }
     }
 
     public class RateTable
@@ -79,8 +83,8 @@ namespace CDPHE.H20.Data.ViewModels
         public string Hourly { get; set; }
     }
 
-    public class ProfileAddress { 
-        
+    public class ProfileAddress 
+    {
         [JsonProperty("address1")]
         public string Address1 { get; set; }
 
@@ -97,6 +101,6 @@ namespace CDPHE.H20.Data.ViewModels
         public string State { get; set; }
 
         [JsonProperty("zip")]
-        public string Zip { get; set; }
+        public string ZipCode { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Net;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -93,11 +94,12 @@ namespace CDPHE.H20.WebAPI.Controllers
             return Ok();
         }
 
-        // PUT api/<UserController>/5
         [HttpGet("profile/{wqcid}")]
         public async Task<IActionResult> GetProfile(string wqcid)
         {
-            var profile = await _userService.GetProfile(wqcid);
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var id = Convert.ToInt32(identity.FindFirst("Id").Value);
+            var profile = await _userService.GetProfile(wqcid, id);
             return Ok(profile);
         }
 

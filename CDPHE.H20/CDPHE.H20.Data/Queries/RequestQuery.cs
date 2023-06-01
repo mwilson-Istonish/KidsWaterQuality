@@ -26,9 +26,9 @@ namespace CDPHE.H20.Data.Queries
             return sql;
         }
 
-        public static string AddRequest()
+        public static string InsertNewRequest()
         {
-            string sql = "";
+            string sql = "INSERT INTO Request(UserId,FacilityId,Status,CreatedBy,CreatedAt,UpdatedBy,LastUpdated,IsActive) VALUES (@UserId,@FacilityId,@Status,@CreatedBy,@CreatedAt,@UpdatedBy,@LastUpdated,@IsActive); Select @@Identity";
             return sql;
         }
 
