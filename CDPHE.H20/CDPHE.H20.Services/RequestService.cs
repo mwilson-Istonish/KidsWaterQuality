@@ -24,8 +24,9 @@ namespace CDPHE.H20.Services
         public Task<List<RemedialActionVM>> GetRemedialActions();
         public Task<List<UserAccountRequest>> GetAccountCreationRequests();
         public Task<Budget> GetBudget();
-        public Task<int> AddRequest(RequestAndDetails requestAndDetails);
-        public Task<int> AddRequestDetail(int requesetId, ReqDetails reqDetails);
+        public Task<int> AddRequest(RequestAndDetails requestAndDetails, int userId);
+        public Task<int> AddRequestDetail(int userId, int requesetId, ReqDetails reqDetails);
+        public Task<string> DeleteRequestDetail(int id, int userId);
     }
     public class RequestService : IRequestService
     {
@@ -47,13 +48,17 @@ namespace CDPHE.H20.Services
                     requestAndDetails.Id= _request.Id;
                     requestAndDetails.Status = _request.Status;
                     requestAndDetails.CreatedAt = _request.CreatedAt;
-                    // requestAndDetails.Facility = _request.Facility;
+                    requestAndDetails.FacilityId = _request.FacilityId;
+                    requestAndDetails.FacilityName = _request.FacilityName;
                     requestAndDetails.Address1 = _request.Address1;
                     if (requestAndDetails.Address2 != null)
                     {
                         requestAndDetails.Address2 = _request.Address2;
                     }
-                    
+                    if (requestAndDetails.Address3 != null)
+                    {
+                        requestAndDetails.Address3 = _request.Address3;
+                    }
                     requestAndDetails.City= _request.City;
                     requestAndDetails.State = _request.State;
                     requestAndDetails.ZipCode = _request.ZipCode;
@@ -62,8 +67,11 @@ namespace CDPHE.H20.Services
                     requestAndDetails.Email = _request.Email;
                     requestAndDetails.Phone = _request.Phone;
 
-                    foreach(var _details in _requestDetails)
+                    requestAndDetails.Details = new List<ReqDetails>();
+
+                    foreach (var _details in _requestDetails)
                     {
+                        _details.RequestId = _request.Id;
                         requestAndDetails.Details.Add(_details);
                         requestAndDetails.TotalCostMaterials = (decimal)(_details.ActualMaterialCost + requestAndDetails.TotalCostMaterials);
                         requestAndDetails.TotalCostLabor = (decimal)(_details.ActualLaborCost + requestAndDetails.TotalCostLabor);
@@ -170,7 +178,7 @@ namespace CDPHE.H20.Services
             }
         }
 
-        public Task<int> AddRequest(RequestAndDetails requestAndDetails)
+        public async Task<int> AddRequest(RequestAndDetails requestAndDetails, int userId)
         {
             // returns id of new request
             var query = RequestQuery.InsertNewRequest();
@@ -178,15 +186,26 @@ namespace CDPHE.H20.Services
             {
                 var id = connection.Query<int>(query, new
                 {
-                    //UserId = requestAndDetails.UserId,
-                    //Status = requestAndDetails.Status,
-                    //FacilityId = requestAndDetails.Fac,
+                    UserId = userId,
+                    FacilityId = requestAndDetails.FacilityId,
+                    Status = "New",
+                    CreatedAt = DateTime.Now,
+                    CreatedBy = userId,
+                    UpdatedBy = userId,
+                    LastUpdated = DateTime.Now,
+                    IsActive = true
                 });
-                return Task.FromResult(id.First());
+                
+                foreach(var detail in requestAndDetails.Details)
+                {
+                    var detailId = await AddRequestDetail(userId, id.First(), detail);
+                }
+
+                return id.First();
             }
         }
 
-        public Task<int> AddRequestDetail(int requestId, ReqDetails reqDetails)
+        public async Task<int> AddRequestDetail(int userId, int requestId, ReqDetails reqDetails)
         {
             // returns id of new request detail
             var query = RequestDetailQuery.InsertNewRequestDetail();
@@ -208,19 +227,30 @@ namespace CDPHE.H20.Services
                     // Values for Actual intentionally set to Expected for ease of totalling costs
                     ActualMaterialCost = reqDetails.ExpectedMaterialCost,
                     ActualLaborCost = reqDetails.ExpectedLaborCost,
-                    ConfirmationSampleResultDate = reqDetails.ConfirmationSampleResultDate,
+                    ConfirmationSampleResultDate = DateTime.Parse("1900-01-01"),
                     ConfirmationSampleResultOperator = reqDetails.ConfirmationSampleResultOperator,
                     ConfirmationSampleResult = reqDetails.ConfirmationSampleResult,
                     InHouseLabor = reqDetails.InHouseLabor,
-                    CreatedBy = 1,
+                    CreatedBy = userId,
                     CreatedAt = DateTime.Now,
-                    UpdatedBy = 1,
+                    UpdatedBy = userId,
                     LastUpdated = DateTime.Now,
                     IsActive = 1
                 });
 
-                return (Task<int>)id;
+                return id.First();
             }
+        }
+
+        public async Task<string> DeleteRequestDetail(int id, int userId)
+        {
+            var query = RequestDetailQuery.DeleteRequestDetail();
+            using (var connection = _dbContext.CreateConnection())
+            {
+                await connection.QueryAsync(query, new { Id = id, UserId = userId, Now = DateTime.Now });
+            }
+
+            return "{ Success }";
         }
     }
 }

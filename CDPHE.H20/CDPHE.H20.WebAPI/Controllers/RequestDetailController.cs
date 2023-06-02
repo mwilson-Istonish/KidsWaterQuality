@@ -2,6 +2,7 @@
 using CDPHE.H20.Data.ViewModels;
 using CDPHE.H20.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,7 +27,9 @@ namespace CDPHE.H20.WebAPI.Controllers
         public async Task<IActionResult> AddRequestDetail(int requestId, ReqDetails reqDetail)
         {
             // Returns Id of new RequestDetail
-            var requestDetail = await _requestService.AddRequestDetail(requestId, reqDetail);
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var id = Convert.ToInt32(identity.FindFirst("Id").Value);
+            var requestDetail = await _requestService.AddRequestDetail(id, requestId, reqDetail);
             return Ok(requestDetail);
         }
 
@@ -38,12 +41,14 @@ namespace CDPHE.H20.WebAPI.Controllers
         //    //return Ok(requestDetail);
         //}
 
-        //[HttpDelete("{id}")]
-        //[Route("delete/{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    //var requestDetail = await _requestService.DeleteRequestDetail(id);
-        //    //return Ok(requestDetail);
-        //}
+        [HttpDelete("{id}")]
+        [Route("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var userId = Convert.ToInt32(identity.FindFirst("Id").Value);
+            var deleteRequest = await _requestService.DeleteRequestDetail(id, userId);
+            return Ok(deleteRequest);
+        }
     }
 }

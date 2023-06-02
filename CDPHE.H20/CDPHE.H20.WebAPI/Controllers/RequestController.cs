@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Net;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -79,10 +80,13 @@ namespace CDPHE.H20.WebAPI.Controllers
             return Ok(budget);
         }
 
-        // POST api/<RequestController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("add")]
+        public async Task<IActionResult> AddRequest(RequestAndDetails requestAndDetails)
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var id = Convert.ToInt32(identity.FindFirst("Id").Value);
+            var request = await _requestService.AddRequest(requestAndDetails, id);
+            return Ok(request);
         }
 
         // PUT api/<RequestController>/5

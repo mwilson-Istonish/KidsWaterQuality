@@ -34,7 +34,7 @@ namespace CDPHE.H20.Data.Queries
 
         public static string DeleteRequest()
         {
-            string sql = "";
+            string sql = "UPDATE [dbo].[Request] SET IsActive = 0 WHERE Id = @Id;";
             return sql;
         }
 
