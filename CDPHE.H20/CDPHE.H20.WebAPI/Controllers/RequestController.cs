@@ -89,16 +89,19 @@ namespace CDPHE.H20.WebAPI.Controllers
             return Ok(request);
         }
 
-        // PUT api/<RequestController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
-        // DELETE api/<RequestController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var userId = Convert.ToInt32(identity.FindFirst("Id").Value);
+            var request = await _requestService.DeleteRequest(id, userId);
+            return Ok(request);
         }
     }
 }

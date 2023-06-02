@@ -33,7 +33,7 @@ namespace CDPHE.H20.WebAPI.Controllers
             return Ok(requestDetail);
         }
 
-        //[HttpPut("{id}")]
+        //[HttpPut]
         //[Route("update/{id}")]
         //public async Task<IActionResult> Update(ReqDetails reqDetail)
         //{
@@ -41,7 +41,7 @@ namespace CDPHE.H20.WebAPI.Controllers
         //    //return Ok(requestDetail);
         //}
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
         [Route("delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {

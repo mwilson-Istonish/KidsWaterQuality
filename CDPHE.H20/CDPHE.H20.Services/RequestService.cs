@@ -252,5 +252,16 @@ namespace CDPHE.H20.Services
 
             return "{ Success }";
         }
+
+        public async Task<string> DeleteRequest(int id, int userId)
+        {
+            var query = RequestQuery.DeleteRequest();
+            using (var connection = _dbContext.CreateConnection())
+            {
+                await connection.QueryAsync(query, new { Id = id, UserId = userId, Now = DateTime.Now });
+            }
+
+            return "{ Success }";
+        }
     }
 }

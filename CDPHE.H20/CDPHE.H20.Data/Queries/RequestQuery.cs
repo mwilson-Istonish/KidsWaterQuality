@@ -34,10 +34,9 @@ namespace CDPHE.H20.Data.Queries
 
         public static string DeleteRequest()
         {
-            string sql = "UPDATE [dbo].[Request] SET IsActive = 0 WHERE Id = @Id;";
+            string sql = "UPDATE [dbo].[Request] SET IsActive = 0, Status = 'Canceled', UpdatedBy = @UserId, LastUpdated = @Now  WHERE Id = @Id;";
             return sql;
         }
-
 
         public static string GetUserAccountRequests()
         {
