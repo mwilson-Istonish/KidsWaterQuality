@@ -23,7 +23,7 @@ import AdminSettings from '@/components/modals/AdminSettings.vue'
                             </div>
                             <div class="col-xl-2 h20-dashboard-col" v-show="this.store.getters.waterForKidsAccess">
                                 <div class="card h20-dashboard-card">
-                                    <div class="card-body text-center h20-dashboard-card-body">
+                                    <div class="card-body text-center h20-dashboard-card-body" v-on:click="navigateToPage('/WaterForKids')">
                                         Water for Kids Reimbursement<br>
                                         <i class="fa-solid fa-faucet-drip h20-dashboard-card-icon"></i>
                                     </div>

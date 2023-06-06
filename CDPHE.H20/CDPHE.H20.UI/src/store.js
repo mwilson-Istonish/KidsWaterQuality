@@ -4,7 +4,6 @@ import Vuex from 'vuex'
 const store = new Vuex.Store({
   state: {
     title: "Vue Store",
-    userRole: "Admin",
     waterForKidsRoles: ["WQ Staff", "WQ Fiscal", "Provider"],
     userManagementRoles: ["User Manager"],
     count: 1,
@@ -31,14 +30,14 @@ const store = new Vuex.Store({
     }
   },
   getters: {
-    isAdmin(state) {
-        return state.userRole == "Admin"
+    isAdmin(state, getters) {
+        return getters.getUserRole == "Admin"
     },
-    waterForKidsAccess(state) {
-        return state.waterForKidsRoles.includes(state.userRole);
+    waterForKidsAccess(state, getters) {
+        return state.waterForKidsRoles.includes(getters.getUserRole);
     },
     userManagementAccess(state, getters) {
-        return state.userManagementRoles.includes(state.userRole) || getters.isAdmin
+        return state.userManagementRoles.includes(getters.getUserRole) || getters.isAdmin
     },
     getCount(state) {
         return state.count;

@@ -20,6 +20,8 @@ export default {
           totalCostMaterials: 0
         },
         currentRequestFiles: [],
+        budget: {},
+        profile: {},
        }
     },
     methods: {
@@ -43,16 +45,30 @@ export default {
             console.log(error)
         })
       },
-      async GetRequestsByProviderID(id) {
-        await axios
-        .get(this.API_URL + "v1/request/provider/" + id)
-        .then((response) => {
-            this.requests = response.data;
-            return this.requests;
-        })
-        .catch((error) => {
-            console.log(error)
-        })
+      async GetRequestsAPI(id) {
+        if(id){
+          await axios
+          .get(this.API_URL + "v1/request/provider/" + id)
+          .then((response) => {
+              this.requests = response.data;
+              return this.requests;
+          })
+          .catch((error) => {
+              console.log(error)
+          })
+        }
+        else{
+          await axios
+          .get(this.API_URL + "v1/request/getallrequests")
+          .then((response) => {
+              this.requests = response.data;
+              return this.requests;
+          })
+          .catch((error) => {
+              console.log(error)
+          })
+        }
+
       },
       async GetRemedialActions() {
         await axios
@@ -69,7 +85,6 @@ export default {
         await axios
         .get(this.API_URL + "v1/request/accountcreationrequests/")
         .then((response) => {
-            console.log(response.data)
             this.accountCreationRequests = response.data;
             return this.remedialActions;
         })
@@ -107,7 +122,30 @@ export default {
         .then((response) => {
             this.currentRequestFiles = response.data;
             console.log(this.currentRequestFiles)
-            return this.roles;
+            return this.currentRequestFiles;
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+      },
+      async getBudget() {
+        await axios
+        .get(this.API_URL + "v1/budget")
+        .then((response) => {
+            this.budget = response.data;
+            return this.budget;
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+      },
+      async getProfileAPI(wqcid) {
+        await axios
+        .get(this.API_URL + "v1/user/profile/" + wqcid)
+        .then((response) => {
+            this.profile = response.data;
+            console.log(this.profile)
+            return this.profile;
         })
         .catch((error) => {
             console.log(error)
