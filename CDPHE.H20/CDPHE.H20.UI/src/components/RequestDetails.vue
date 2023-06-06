@@ -191,7 +191,7 @@
                                                             <select class="form-select" disabled v-model="detail.remedialActionId">
                                                                 <option value="0" disabled selected>Select a Remedial Action</option>
                                                                 <option v-for="remedialAction in this.remedialActions.filter(rem => rem.id !== 12)" :value="remedialAction.Id">{{ remedialAction.Name }}</option>
-                                                            </select>
+                                                            </select> 
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-6">
