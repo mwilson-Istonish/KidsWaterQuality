@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CDPHE.H20.Data.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -61,6 +62,8 @@ namespace CDPHE.H20.Data.ViewModels
 
         [JsonProperty("details")]
         public List<ReqDetails> Details { get; set; }
+
+        public List<Note> Notes { get; set; }
 
     [JsonProperty("totalCostLabor")]
         public decimal TotalCostLabor { get; set; }

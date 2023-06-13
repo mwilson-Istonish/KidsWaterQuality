@@ -80,6 +80,9 @@ namespace CDPHE.H20.Services
                 }
             }
 
+            requestAndDetails.Notes = new List<Note>();
+            requestAndDetails.Notes = await GetNotes(id);
+
             return JsonConvert.SerializeObject(requestAndDetails);
         }
 
@@ -103,6 +106,24 @@ namespace CDPHE.H20.Services
 
         }
         
+        public async Task<List<Note>> GetNotes(int requestId)
+        {
+            List<Note> notes = new List<Note>();
+
+            var query = NoteQuery.GetNotesByRequestId();
+
+            using (var connection = _dbContext.CreateConnection())
+            {
+                var _notes = await connection.QueryAsync<Note>(query, new { RequestId = requestId });
+
+                foreach (var _note in _notes)
+                {
+                    notes.Add(_note);
+                }
+            }   
+            return notes;
+        }
+
         public async Task<List<RequestsVM>> GetAllRequests()
         {
             List<RequestsVM> requests = new List<RequestsVM>();
