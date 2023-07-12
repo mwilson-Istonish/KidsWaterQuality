@@ -402,5 +402,42 @@ namespace CDPHE.H20.Services
 
             return "{ Success }";
         }
+
+        public async Task<List<RateTable>> GetRateTable(string county)
+        {
+            List<RateTable> rateTable = new List<RateTable>();
+            var query = UserQuery.GetRateTable();
+            query = query.Replace("Town", "[" + county + "]");
+
+            using (var connection = _dbContext.CreateConnection())
+            {
+                var response = await connection.QueryAsync<RateTable>(query);
+                string hourlyRate = "0.00";
+                int i = 0;
+                foreach (var rate in response)
+                {
+                    RateTable _rateTable = new RateTable();
+                    _rateTable.Id = rate.Id;
+                    _rateTable.Action = rate.Action;
+                    _rateTable.Duration = rate.Duration;
+                    if (i == 0)
+                    {
+                        hourlyRate = String.Format("{0:C2}", (Convert.ToDecimal(rate.Hourly) * Convert.ToDecimal(1.00)));
+                        _rateTable.Hourly = hourlyRate;
+                        _rateTable.NotToExceed = String.Format("{0:C2}", (Convert.ToDecimal(0.00)));
+                        i++;
+                    }
+                    else
+                    {
+                        _rateTable.NotToExceed = String.Format("{0:C2}", (Convert.ToDecimal(rate.Hourly) * Convert.ToDecimal(1.00)));
+                        _rateTable.Hourly = hourlyRate;
+                    }
+
+                    rateTable.Add(_rateTable);
+                }
+            }
+
+            return rateTable;
+        }
     }
 }

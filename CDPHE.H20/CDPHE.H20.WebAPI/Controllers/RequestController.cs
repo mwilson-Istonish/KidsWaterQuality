@@ -93,6 +93,13 @@ namespace CDPHE.H20.WebAPI.Controllers
             return Ok(budget);
         }
 
+        [HttpGet("ratetable/{county}")]
+        public async Task<IActionResult> GetRateTable(string county)
+        {
+            var rateTable = await _requestService.GetRateTable(county);
+            return Ok(rateTable);
+        }
+
         [HttpPost("add")]
         public async Task<IActionResult> AddRequest(RequestAndDetails requestAndDetails)
         {
