@@ -44,6 +44,20 @@ namespace CDPHE.H20.WebAPI.Controllers
             return Ok(request);
         }
 
+        [HttpGet("employee/{id}")]
+        public async Task<IActionResult> GetByEmployeeId(int id)
+        {
+            var request = await _requestService.GetRequestsByEmployee(id);
+            return Ok(request);
+        }
+
+        [HttpGet("draft")]
+        public async Task<IActionResult> GetByDraft()
+        {
+            var request = await _requestService.GetRequestsInDraft();
+            return Ok(request);
+        }
+
         [HttpGet("getallrequests")]
         public async Task<IActionResult> GetAllRequests()
         {
@@ -88,10 +102,14 @@ namespace CDPHE.H20.WebAPI.Controllers
             return Ok(request);
         }
 
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateRequest(RequestAndDetails requestAndDetails)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var id = Convert.ToInt32(identity.FindFirst("Id").Value);
+            var request = await _requestService.UpdateRequest(requestAndDetails, id);
+            return Ok(request);
+        }
 
         [HttpDelete]
         [Route("delete/{id}")]

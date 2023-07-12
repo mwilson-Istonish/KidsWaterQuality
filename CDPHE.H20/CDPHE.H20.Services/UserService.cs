@@ -109,7 +109,7 @@ namespace CDPHE.H20.Services
                         
                         // TODO: Uncomment for Production
                         // !! Removed for Testing !!
-                        // var response = await emailService.SendLoginEmail(email, sixDigitNumber);
+                        var response = await emailService.SendLoginEmail(email, sixDigitNumber);
                     }
                     catch (Exception ex)
                     {

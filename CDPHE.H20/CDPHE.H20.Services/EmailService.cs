@@ -16,15 +16,15 @@ namespace CDPHE.H20.Services
     
     public interface IEmailService
     {
-
+        public Task<string> SendEmailAsync(List<string> toAddresses, string bodyHtml, string bodyText, string subject);
+        public Task<string> SendLoginEmail(string email, string token);
     }
 
     public class EmailService : IEmailService
     {
         public EmailService() { }
 
-        public async Task<string> SendEmailAsync(List<string> toAddresses,
-        string bodyHtml, string bodyText, string subject)
+        public async Task<string> SendEmailAsync(List<string> toAddresses, string bodyHtml, string bodyText, string subject)
         {
             string accessKey = "";
             string secretKey = "";

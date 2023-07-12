@@ -24,6 +24,9 @@ namespace CDPHE.H20.Data.ViewModels
         [JsonProperty("wqcid")]
         public string? WQCID { get; set; }
 
+        [JsonProperty("isAssignedTo")]
+        public int IsAssignedTo { get; set; }
+
         [JsonProperty("address1")]
         public string? Address1 { get; set; }
 
@@ -65,7 +68,7 @@ namespace CDPHE.H20.Data.ViewModels
 
         public List<Note> Notes { get; set; }
 
-    [JsonProperty("totalCostLabor")]
+        [JsonProperty("totalCostLabor")]
         public decimal TotalCostLabor { get; set; }
 
         [JsonProperty("totalCostMaterials")]

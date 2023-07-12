@@ -1,0 +1,22 @@
+
+{
+    "region" : "us-east-2",
+    "configuration" : "Debug",
+    "framework"     : "net6.0",
+    "self-contained" : false,
+    "application"    : "CDPHEH20WebAPI",
+    "environment"    : "CDPHEH20WebAPI-dev",
+    "enable-xray"    : false,
+    "enhanced-health-type" : "basic",
+    "additional-options"   : "",
+    "solution-stack"       : "64bit Windows Server Core 2019 v2.11.5 running IIS 10.0",
+    "environment-type"     : "SingleInstance",
+    "cname"                : "cdpheh2owebapi-dev",
+    "instance-type"        : "t3a.small",
+    "key-pair"             : "",
+    "instance-profile"     : "aws-elasticbeanstalk-ec2-role",
+    "service-role"         : "aws-elasticbeanstalk-service-role",
+    "proxy-server"         : "nginx",
+    "app-path"             : "/",
+    "iis-website"          : "Default Web Site"
+}

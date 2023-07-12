@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using CDPHE.H20.Data.Models;
 using Azure.Core;
 using System.Diagnostics.Tracing;
+using Amazon.Runtime.Internal;
 
 namespace CDPHE.H20.Services
 {
@@ -25,6 +26,7 @@ namespace CDPHE.H20.Services
         public Task<List<UserAccountRequest>> GetAccountCreationRequests();
         public Task<Budget> GetBudget();
         public Task<int> AddRequest(RequestAndDetails requestAndDetails, int userId);
+        public Task<string> UpdateRequest(RequestAndDetails requestAndDetails, int userId);
         public Task<int> AddRequestDetail(int userId, int requesetId, ReqDetails reqDetails);
         public Task<string> DeleteRequestDetail(int id, int userId);
     }
@@ -105,7 +107,55 @@ namespace CDPHE.H20.Services
             return requests;
 
         }
-        
+
+        public async Task<List<RequestsVM>> GetRequestsByEmployee(int id)
+        {
+            List<RequestsVM> requests = new List<RequestsVM>();
+            var query = RequestDetailQuery.GetRequestsByEmployeeId();
+            using (var connection = _dbContext.CreateConnection())
+            {
+                var _requests = await connection.QueryAsync<RequestsVM>(query, new { Id = id });
+
+                foreach (var _request in _requests)
+                {
+                    try
+                    {
+                        decimal totalCost = GetTotalCostByRequestId(_request.Id).Result;
+                        _request.TotalCost = totalCost.ToString();
+                    }
+                    catch (Exception)
+                    {
+                        // do nothing
+                    }
+                    
+                    requests.Add(_request);
+                }
+            }
+
+            return requests;
+
+        }
+
+        public async Task<List<RequestsVM>> GetRequestsInDraft()
+        {
+            List<RequestsVM> requests = new List<RequestsVM>();
+            var query = RequestDetailQuery.GetRequestsInDraft();
+            using (var connection = _dbContext.CreateConnection())
+            {
+                var _requests = await connection.QueryAsync<RequestsVM>(query);
+
+                foreach (var _request in _requests)
+                {
+                    //decimal totalCost = GetTotalCostByRequestId(_request.Id).Result;
+                    //_request.TotalCost = totalCost.ToString();
+                    requests.Add(_request);
+                }
+            }
+
+            return requests;
+
+        }
+
         public async Task<List<Note>> GetNotes(int requestId)
         {
             List<Note> notes = new List<Note>();
@@ -209,7 +259,7 @@ namespace CDPHE.H20.Services
                 {
                     UserId = userId,
                     FacilityId = requestAndDetails.FacilityId,
-                    Status = "New",
+                    Status = "Draft",
                     CreatedAt = DateTime.Now,
                     CreatedBy = userId,
                     UpdatedBy = userId,
@@ -226,6 +276,31 @@ namespace CDPHE.H20.Services
             }
         }
 
+        public async Task<string> UpdateRequest(RequestAndDetails requestAndDetails, int userId)
+        {
+            // Assign request to employee if not already assigned
+            if (requestAndDetails.IsAssignedTo == 0)
+            {
+                var query = RequestQuery.AssignRequestToEmployee();
+                using (var connection = _dbContext.CreateConnection())
+                {
+                    var id = connection.Query<int>(query, new
+                    {
+                        Now = DateTime.Now,
+                        RequestId = requestAndDetails.Id,
+                        UserId = userId
+                    });
+                }
+            }   
+
+            // Update request details
+            foreach (var detail in requestAndDetails.Details)
+            {
+                var detailId = await UpdateRequestDetail(userId, detail);
+            }
+
+            return "Success";
+        }
         public async Task<int> AddRequestDetail(int userId, int requestId, ReqDetails reqDetails)
         {
             // returns id of new request detail
@@ -261,6 +336,49 @@ namespace CDPHE.H20.Services
 
                 return id.First();
             }
+        }
+
+        public async Task<string> UpdateRequestDetail(int userId, ReqDetails reqDetails)
+        {
+            var query = RequestDetailQuery.UpdateRequestDetail();
+            using (var connection = _dbContext.CreateConnection())
+            {
+                DateTime confirmationDate = new DateTime();
+                if(reqDetails.ConfirmationSampleResultDate > DateTime.Parse("2000-01-01"))
+                {
+                    confirmationDate = new DateTime();
+                }   
+                else
+                {
+                    confirmationDate = DateTime.Parse("1900-01-01");
+                }
+
+                await connection.QueryAsync(query, new
+                {
+                    Id = reqDetails.Id,
+                    SampleName = reqDetails.SampleName,
+                    InitialSampleDate = reqDetails.InitialSampleDate,
+                    SampleResultOperator = reqDetails.SampleResultOperator,
+                    InitialSampleResult = reqDetails.InitialSampleResult,
+                    FlushSampleDate = reqDetails.FlushSampleDate,
+                    FlushResultOperator = reqDetails.FlushResultOperator,
+                    FlushSampleResult = reqDetails.FlushSampleResult,
+                    RemedialActionId = reqDetails.RemedialActionId,
+                    ExpectedMaterialCost = reqDetails.ExpectedMaterialCost,
+                    ExpectedLaborCost = reqDetails.ExpectedLaborCost,
+                    // Values for Actual intentionally set to Expected for ease of totalling costs
+                    ActualMaterialCost = reqDetails.ExpectedMaterialCost,
+                    ActualLaborCost = reqDetails.ExpectedLaborCost,
+                    ConfirmationSampleResultDate = confirmationDate,
+                    ConfirmationSampleResultOperator = reqDetails.ConfirmationSampleResultOperator,
+                    ConfirmationSampleResult = reqDetails.ConfirmationSampleResult,
+                    InHouseLabor = reqDetails.InHouseLabor,
+                    UpdatedBy = userId,
+                    LastUpdated = DateTime.Now
+                });
+            }
+
+            return "Success";
         }
 
         public async Task<string> DeleteRequestDetail(int id, int userId)
