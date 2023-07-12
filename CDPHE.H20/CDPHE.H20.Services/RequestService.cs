@@ -61,7 +61,8 @@ namespace CDPHE.H20.Services
                     {
                         requestAndDetails.Address3 = _request.Address3;
                     }
-                    requestAndDetails.City= _request.City;
+                    requestAndDetails.City = _request.City;
+                    requestAndDetails.County = _request.County;
                     requestAndDetails.State = _request.State;
                     requestAndDetails.ZipCode = _request.ZipCode;
                     requestAndDetails.WQCID= _request.WQCID;

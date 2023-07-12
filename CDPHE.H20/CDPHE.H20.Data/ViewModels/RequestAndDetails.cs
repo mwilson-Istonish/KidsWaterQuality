@@ -39,6 +39,9 @@ namespace CDPHE.H20.Data.ViewModels
         [JsonProperty("city")]
         public string? City { get; set; }
 
+        [JsonProperty("county")]
+        public string? County { get; set; }
+
         [JsonProperty("state")]
         public string? State { get; set; }
 
