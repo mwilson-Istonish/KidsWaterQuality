@@ -32,9 +32,10 @@ namespace CDPHE.H20.WebAPI.Controllers
 
         // GET api/<NoteController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> GetNotesByRequestId(int id)
         {
-            return "value";
+            var requestDetail = await _noteService.GetNotes(id);
+            return Ok(requestDetail);
         }
 
         // POST api/<NoteController>

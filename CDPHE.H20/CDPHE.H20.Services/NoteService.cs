@@ -35,5 +35,15 @@ namespace CDPHE.H20.Services
                 return msg;
             }
         }
+
+        public async Task<List<Note>> GetNotes(int RequestId)
+        {
+            var query = NoteQuery.GetNotesByRequestId();
+            using(var connection = _dbContext.CreateConnection())
+            {
+                var notes = await connection.QueryAsync<Note>(query, new { RequestId = RequestId });
+                return notes.ToList();
+            }
+        }
     }
 }
