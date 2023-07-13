@@ -34,8 +34,8 @@ namespace CDPHE.H20.Data.Queries
         // This method returns a SQL string that selects information about an active user with the specified login key and token, and whose login key expiration date is less than the current date/time
         public static string Login()
         {
-            DateTime expire = DateTime.Now.AddHours(1); // sets expiration date/time to 1 hour from current time
-            string sql = "SELECT [User].Id, [User].FirstName, [User].LastName, [User].Email, [User].WQCID, Role.Name AS Role FROM [User] INNER JOIN Role ON [User].RoleId = Role.Id where [User].Email = @Email AND LoginKey = @Token AND LoginKeyExpiration < GETDATE() AND [User].IsActive = 1";
+            DateTime expire = DateTime.Now.AddHours(8); // sets expiration date/time to 1 hour from current time
+            string sql = "SELECT [User].Id, [User].FirstName, [User].LastName, [User].Email, [User].WQCID, Role.Name AS Role FROM [User] INNER JOIN Role ON [User].RoleId = Role.Id where [User].Email = @Email AND LoginKey = @Token AND LoginKeyExpiration > GETDATE() AND [User].IsActive = 1";
             return sql;
         }
 
