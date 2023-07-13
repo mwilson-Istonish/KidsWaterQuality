@@ -1,0 +1,138 @@
+html, body {
+    margin: 0;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+.h20-router-view {
+    padding: 2rem !important;
+    margin-top: auto !important;
+    margin-bottom: auto !important;
+}
+
+.h20-dashboard-view {
+    padding: 1.5rem !important;
+}
+
+.h20-full-height {
+    height: 100% !important;
+}
+
+.h20-footer-icon {
+    padding: 0.3rem;
+    cursor: pointer !important;
+    font-size:22px
+}
+
+.h20-footer-divider {
+    position:relative;
+    bottom:0.3rem;
+    border-right:solid 1px black;
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value]::before,
+ .ql-snow .ql-picker.ql-size .ql-picker-item[data-value]::before { 
+    content: attr(data-value) !important;
+ }
+
+.h20-footer-icon:hover {
+    color: #009add;
+}
+
+.h20-dashboard-card {
+    height: 100% !important;
+    cursor: pointer;
+}
+
+.h20-dashboard-card:hover {
+    border-color: #009add;
+    color: #009add
+}
+
+.h20-dashboard-card-body {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.h20-dashboard-card-icon {
+    font-size: 48px;
+    margin-top: 1rem;
+}
+
+.h20-dashboard-col {
+    margin-bottom: 1rem
+}
+
+.h20-navbar {
+    padding: 1rem !important;
+    background-color: white;
+}
+
+.h20-error-text{
+    margin-left:1rem;
+    color: red
+}
+
+.h20-request-row:hover {
+    background-color: #d9d9d9;
+    cursor: pointer;
+}
+
+.btn-primary{
+    background-color: #009add !important;
+    border-color: #009add !important;
+}
+
+.modal-dialog-centered {
+    bottom:1rem
+}
+
+label {
+    font-weight:500
+}
+
+.h20-blue-hover:hover {
+    color: #009add !important
+}
+
+.h20-footer {
+    padding: 0.5rem !important;
+    background-color: white;
+}
+
+.h20-row-center {
+    margin-top: 10rem !important;
+}
+
+.h20-btn {
+    background-color: #009add !important;
+    color: white !important; 
+}
+
+.h20-modal-header {
+    font-size: 22px;
+    font-weight: 600
+}
+
+.h20-modal-spacing {
+    margin-top: 2rem !important
+}
+
+.btn-spacing {
+    margin-top:1rem
+}
+
+.tosDisplay{
+    border: 1px solid #bababa;
+    border-radius: 8px;
+    padding:0.5rem;
+    margin-top:0.5rem;
+    margin-bottom: 0.5rem
+}
+
+
+body {
+    background-color: #ececeb !important;
+}
