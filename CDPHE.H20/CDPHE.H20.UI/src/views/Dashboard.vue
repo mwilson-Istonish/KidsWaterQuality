@@ -85,7 +85,7 @@ import AdminSettings from '@/components/modals/AdminSettings.vue'
             await this.getAccountRequests();
         }
         else {
-            console.log("in")
+            console.log("Staff")
             await this.GetRequestsStaffAPI(this.store.getters.getUser.Id);
         }   
     },
@@ -100,6 +100,7 @@ import AdminSettings from '@/components/modals/AdminSettings.vue'
     },
     computed: {
         getNotificationCount() {
+            console.log("notifications")
             if (this.requests.length > 0) {
                 if (this.store.getters.getUserRole == "Provider") {
                     return this.requests.filter(g => g.Status.toLowerCase() == "new" || g.Status.toLowerCase() == "approved").length
