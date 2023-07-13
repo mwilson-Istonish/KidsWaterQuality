@@ -11,7 +11,7 @@ import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.js'
 const app = createApp(App)
 const emitter = mitt();
 
-app.config.globalProperties.API_URL = 'http://cdpheh2owebapi-dev.us-east-2.elasticbeanstalk.com/'
+app.config.globalProperties.API_URL = 'https://aws.istonish.net/'
 
 app.use(router)
 app.use(bootstrap)

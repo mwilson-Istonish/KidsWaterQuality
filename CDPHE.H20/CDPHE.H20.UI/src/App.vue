@@ -8,7 +8,7 @@ import MyProfile from '@/components/modals/MyProfile.vue'
     <nav class="navbar navbar-expand-sm h20-navbar">
       <div class="container-fluid">
         <div class="col text-center">
-          <img src="src/assets/img/navbar-logo.png" id="navbar-logo" style="max-height:50px">
+          <img :src="logo" id="navbar-logo" style="max-height:50px">
         </div>
       </div>
     </nav>
@@ -40,6 +40,7 @@ import MyProfile from '@/components/modals/MyProfile.vue'
   import { inject } from 'vue'
   import { useStore } from "vuex";
   import { mapGetters } from 'vuex';
+  import navbarLogo from './assets/img/navbar-logo.png'
   export default {
     components: {
       MyProfile
@@ -48,7 +49,8 @@ import MyProfile from '@/components/modals/MyProfile.vue'
       return {
         currentYear: new Date().getFullYear(),
         emitter: inject('emitter'),    
-        store: useStore()
+        store: useStore(),
+        logo: navbarLogo,
       }
     },
     methods: {
