@@ -10,7 +10,7 @@ namespace CDPHE.H20.Data.ViewModels
     {
         public int Id { get; set; }
         public string Status { get; set; }
-        public decimal MaterialCost { get; set; }
-        public decimal LaborCost { get; set; }
+        public decimal ActualMaterialCost { get; set; }
+        public decimal ActualLaborCost { get; set; }
     }
 }

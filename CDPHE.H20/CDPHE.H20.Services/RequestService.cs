@@ -67,6 +67,7 @@ namespace CDPHE.H20.Services
                     requestAndDetails.ZipCode = _request.ZipCode;
                     requestAndDetails.WQCID= _request.WQCID;
                     requestAndDetails.Provider = _request.Provider;
+                    requestAndDetails.ProviderId = _request.ProviderId;
                     requestAndDetails.Email = _request.Email;
                     requestAndDetails.Phone = _request.Phone;
 
@@ -99,7 +100,7 @@ namespace CDPHE.H20.Services
 
                 foreach (var _request in _requests)
                 {
-                    decimal totalCost = GetTotalCostByRequestId(_request.Id).Result;
+                    decimal? totalCost = GetTotalCostByRequestId(_request.Id).Result;
                     _request.TotalCost = totalCost.ToString();
                     requests.Add(_request);
                 }
@@ -121,7 +122,7 @@ namespace CDPHE.H20.Services
                 {
                     try
                     {
-                        decimal totalCost = GetTotalCostByRequestId(_request.Id).Result;
+                        decimal? totalCost = GetTotalCostByRequestId(_request.Id).Result;
                         _request.TotalCost = totalCost.ToString();
                     }
                     catch (Exception)
@@ -185,7 +186,7 @@ namespace CDPHE.H20.Services
                 
                 foreach (var _request in _requests)
                 {
-                    decimal totalCost = GetTotalCostByRequestId(_request.Id).Result;
+                    decimal? totalCost = GetTotalCostByRequestId(_request.Id).Result;
                     _request.TotalCost = totalCost.ToString();
                     requests.Add(_request);
                 }
@@ -193,14 +194,14 @@ namespace CDPHE.H20.Services
 
             return requests;
         }
-        
-        public async Task<decimal> GetTotalCostByRequestId(int requestId)
+
+        public async Task<decimal?> GetTotalCostByRequestId(int requestId)
         {
             var query = RequestDetailQuery.GetRequestTotalCost();
-            using(var connection = _dbContext.CreateConnection())
+            using (var connection = _dbContext.CreateConnection())
             {
-                var totalCost = await connection.QueryAsync<decimal>(query, new { RequestId = requestId });
-                return totalCost.First();
+                var totalCost = await connection.QueryAsync<decimal?>(query, new { RequestId = requestId });
+                return totalCost.FirstOrDefault();
             }
         }
 
@@ -238,6 +239,37 @@ namespace CDPHE.H20.Services
             }
 
             return requests;
+        }
+
+        public async Task<string> UpdateApprovedInformation(RequestAndDetails requestAndDetails, int userId)
+        {
+            // returns id of new request
+            var query = RequestDetailQuery.UpdateRequestFundedInformation();
+            using (var connection = _dbContext.CreateConnection())
+            {
+                foreach (var detail in requestAndDetails.Details)
+                {
+                    try
+                    {
+                        connection.Query(query, new
+                        {
+                            ConfirmationSampleResultDate = detail.ConfirmationSampleResultDate,
+                            ConfirmationSampleResultOperator = detail.ConfirmationSampleResultOperator,
+                            ConfirmationSampleResult = detail.ConfirmationSampleResult,
+                            ActualMaterialCost = detail.ActualMaterialCost,
+                            ActualLaborCost = detail.ActualLaborCost,
+                            UpdatedBy = userId,
+                            LastUpdated = DateTime.Now,
+                            Id = detail.Id
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+            }
+            return "{ Success }";
         }
 
         public async Task<Budget> GetBudget()
@@ -280,7 +312,7 @@ namespace CDPHE.H20.Services
         public async Task<string> UpdateRequest(RequestAndDetails requestAndDetails, int userId)
         {
             // Assign request to employee if not already assigned
-            if (requestAndDetails.IsAssignedTo == 0)
+            if (requestAndDetails.Status == "Draft")
             {
                 var query = RequestQuery.AssignRequestToEmployee();
                 using (var connection = _dbContext.CreateConnection())
@@ -297,7 +329,7 @@ namespace CDPHE.H20.Services
             // Update request details
             foreach (var detail in requestAndDetails.Details)
             {
-                var detailId = await UpdateRequestDetail(userId, detail);
+                var detailId = await UpdateRequestDetail(userId, detail, requestAndDetails.Status);
             }
 
             return "Success";
@@ -339,7 +371,7 @@ namespace CDPHE.H20.Services
             }
         }
 
-        public async Task<string> UpdateRequestDetail(int userId, ReqDetails reqDetails)
+        public async Task<string> UpdateRequestDetail(int userId, ReqDetails reqDetails, string status)
         {
             var query = RequestDetailQuery.UpdateRequestDetail();
             using (var connection = _dbContext.CreateConnection())
@@ -354,29 +386,57 @@ namespace CDPHE.H20.Services
                     confirmationDate = DateTime.Parse("1900-01-01");
                 }
 
-                await connection.QueryAsync(query, new
+                if(status == "Approved")
                 {
-                    Id = reqDetails.Id,
-                    SampleName = reqDetails.SampleName,
-                    InitialSampleDate = reqDetails.InitialSampleDate,
-                    SampleResultOperator = reqDetails.SampleResultOperator,
-                    InitialSampleResult = reqDetails.InitialSampleResult,
-                    FlushSampleDate = reqDetails.FlushSampleDate,
-                    FlushResultOperator = reqDetails.FlushResultOperator,
-                    FlushSampleResult = reqDetails.FlushSampleResult,
-                    RemedialActionId = reqDetails.RemedialActionId,
-                    ExpectedMaterialCost = reqDetails.ExpectedMaterialCost,
-                    ExpectedLaborCost = reqDetails.ExpectedLaborCost,
-                    // Values for Actual intentionally set to Expected for ease of totalling costs
-                    ActualMaterialCost = reqDetails.ExpectedMaterialCost,
-                    ActualLaborCost = reqDetails.ExpectedLaborCost,
-                    ConfirmationSampleResultDate = confirmationDate,
-                    ConfirmationSampleResultOperator = reqDetails.ConfirmationSampleResultOperator,
-                    ConfirmationSampleResult = reqDetails.ConfirmationSampleResult,
-                    InHouseLabor = reqDetails.InHouseLabor,
-                    UpdatedBy = userId,
-                    LastUpdated = DateTime.Now
-                });
+                    await connection.QueryAsync(query, new
+                    {
+                        Id = reqDetails.Id,
+                        SampleName = reqDetails.SampleName,
+                        InitialSampleDate = reqDetails.InitialSampleDate,
+                        SampleResultOperator = reqDetails.SampleResultOperator,
+                        InitialSampleResult = reqDetails.InitialSampleResult,
+                        FlushSampleDate = reqDetails.FlushSampleDate,
+                        FlushResultOperator = reqDetails.FlushResultOperator,
+                        FlushSampleResult = reqDetails.FlushSampleResult,
+                        RemedialActionId = reqDetails.RemedialActionId,
+                        ExpectedMaterialCost = reqDetails.ExpectedMaterialCost,
+                        ExpectedLaborCost = reqDetails.ExpectedLaborCost,
+                        ActualMaterialCost = reqDetails.ActualMaterialCost,
+                        ActualLaborCost = reqDetails.ActualLaborCost,
+                        ConfirmationSampleResultDate = reqDetails.ConfirmationSampleResultDate,
+                        ConfirmationSampleResultOperator = reqDetails.ConfirmationSampleResultOperator,
+                        ConfirmationSampleResult = reqDetails.ConfirmationSampleResult,
+                        InHouseLabor = reqDetails.InHouseLabor,
+                        UpdatedBy = userId,
+                        LastUpdated = DateTime.Now
+                    });
+                }
+                else
+                {
+                    await connection.QueryAsync(query, new
+                    {
+                        Id = reqDetails.Id,
+                        SampleName = reqDetails.SampleName,
+                        InitialSampleDate = reqDetails.InitialSampleDate,
+                        SampleResultOperator = reqDetails.SampleResultOperator,
+                        InitialSampleResult = reqDetails.InitialSampleResult,
+                        FlushSampleDate = reqDetails.FlushSampleDate,
+                        FlushResultOperator = reqDetails.FlushResultOperator,
+                        FlushSampleResult = reqDetails.FlushSampleResult,
+                        RemedialActionId = reqDetails.RemedialActionId,
+                        ExpectedMaterialCost = reqDetails.ExpectedMaterialCost,
+                        ExpectedLaborCost = reqDetails.ExpectedLaborCost,
+                        // Values for Actual intentionally set to Expected for ease of totalling costs
+                        ActualMaterialCost = reqDetails.ExpectedMaterialCost,
+                        ActualLaborCost = reqDetails.ExpectedLaborCost,
+                        ConfirmationSampleResultDate = confirmationDate,
+                        ConfirmationSampleResultOperator = reqDetails.ConfirmationSampleResultOperator,
+                        ConfirmationSampleResult = reqDetails.ConfirmationSampleResult,
+                        InHouseLabor = reqDetails.InHouseLabor,
+                        UpdatedBy = userId,
+                        LastUpdated = DateTime.Now
+                    });
+                }
             }
 
             return "Success";

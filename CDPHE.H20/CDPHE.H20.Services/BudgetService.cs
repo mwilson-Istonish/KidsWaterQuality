@@ -42,18 +42,18 @@ namespace CDPHE.H20.Services
                         switch (_detail.Status)
                         {
                             case "Complete":
-                                budgetVM.Spent += _detail.MaterialCost;
-                                budgetVM.Spent += _detail.LaborCost;
+                                budgetVM.Spent += _detail.ActualMaterialCost;
+                                budgetVM.Spent += _detail.ActualLaborCost;
                                 break;
 
                             case "New":
-                                budgetVM.Requested += _detail.MaterialCost;
-                                budgetVM.Requested += _detail.LaborCost;
+                                budgetVM.Requested += _detail.ActualMaterialCost;
+                                budgetVM.Requested += _detail.ActualLaborCost;
                                 break;
 
                             case "In Progress":
-                                budgetVM.Approved += _detail.MaterialCost;
-                                budgetVM.Approved += _detail.LaborCost;
+                                budgetVM.Approved += _detail.ActualMaterialCost;
+                                budgetVM.Approved += _detail.ActualLaborCost;
                                 break;
                         }
                         

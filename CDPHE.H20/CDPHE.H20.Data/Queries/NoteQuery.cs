@@ -10,7 +10,7 @@ namespace CDPHE.H20.Data.Queries
     {
         public static string GetNotesByRequestId()
         {
-            string sql = "SELECT Note.Id, Note.RequestId, Note.Text, [User].LastName + ', ' + [User].FirstName as CreatedBy, Note.CreatedAt FROM Note INNER JOIN [User] ON Note.CreatedBy = [User].id WHERE RequestId = @RequestId ORDER BY CreatedAt DESC";
+            string sql = "SELECT Note.Id, Note.RequestId, Note.Text, [User].LastName + ', ' + [User].FirstName as CreatedBy, Note.CreatedBy as UserId, Note.CreatedAt FROM Note INNER JOIN [User] ON Note.CreatedBy = [User].id WHERE RequestId = @RequestId ORDER BY CreatedAt DESC";
             return sql;
         }
 

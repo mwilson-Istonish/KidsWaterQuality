@@ -10,7 +10,7 @@ namespace CDPHE.H20.Data.Queries
     {
         public static string GetRequestDetailsByRequestId()
         {
-            string sql = "SELECT Request.Id, Request.Status, Request.CreatedAt, Facility.Id as FacilityId, Facility.Name AS FacilityName, [User].FirstName + ' ' + [User].LastName AS Provider, [User].Email, [User].Phone, Facility.WQCID, Facility.Address1, Facility.Address2, Facility.City, Facility.County, Facility.State, Facility.ZipCode FROM Request INNER JOIN Facility ON Request.FacilityId = Facility.Id INNER JOIN [User] ON Request.UserId = [User].id WHERE Request.Id = @ID" +
+            string sql = "SELECT Request.Id, Request.Status, Request.UserId as ProviderId, Request.CreatedAt, Facility.Id as FacilityId, Facility.Name AS FacilityName, [User].FirstName + ' ' + [User].LastName AS Provider, [User].Email, [User].Phone, Facility.WQCID, Facility.Address1, Facility.Address2, Facility.City, Facility.County, Facility.State, Facility.ZipCode FROM Request INNER JOIN Facility ON Request.FacilityId = Facility.Id INNER JOIN [User] ON Request.UserId = [User].id WHERE Request.Id = @ID" +
                          " SELECT rd.Id AS Id, rd.SampleName, rd.InitialSampleDate, rd.SampleResultOperator, rd.InitialSampleResult, rd.FlushSampleDate, rd.FlushResultOperator, rd.FlushSampleResult, rd.RemedialActionId, rd.ExpectedMaterialCost, rd.ExpectedLaborCost, rd.ActualMaterialCost, rd.ActualLaborCost, rd.ConfirmationSampleResultDate, rd.ConfirmationSampleResultOperator, rd.ConfirmationSampleResult, rd.InHouseLabor, RemedialAction.Name AS RemedialAction, RemedialAction.Id AS RemedialActionID FROM RequestDetail AS rd INNER JOIN Request AS r ON rd.RequestId = r.Id INNER JOIN RemedialAction ON rd.RemedialActionId = RemedialAction.Id WHERE (r.Id = @ID) AND (rd.IsActive = 1)";
             return sql;
         }
@@ -60,6 +60,12 @@ namespace CDPHE.H20.Data.Queries
         public static string DeleteRequestDetail()
         {
             string sql = "UPDATE RequestDetail SET IsActive = 0, UpdatedBy = @UserId, LastUpdated = @Now  WHERE Id = @Id";
+            return sql;
+        }
+
+        public static string UpdateRequestFundedInformation()
+        {
+            string sql = "UPDATE RequestDetail SET ConfirmationSampleResultDate = @ConfirmationSampleResultDate, ConfirmationSampleResultOperator = @ConfirmationSampleResultOperator, ConfirmationSampleResult = @ConfirmationSampleResult, ActualMaterialCost = @ActualMaterialCost, ActualLaborCost = @ActualLaborCost, UpdatedBy = @UpdatedBy, LastUpdated = @LastUpdated WHERE Id = @Id; Select @@Identity";
             return sql;
         }
     }

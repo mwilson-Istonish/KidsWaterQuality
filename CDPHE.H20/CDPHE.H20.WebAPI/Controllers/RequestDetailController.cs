@@ -31,6 +31,17 @@ namespace CDPHE.H20.WebAPI.Controllers
             return Ok(requestDetail);
         }
 
+        [HttpPost]
+        [Route("approved")]
+        public async Task<IActionResult> UpdateApprovedInformation(RequestAndDetails requestAndDetails)
+        {
+            // Returns Id of new RequestDetail
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var id = Convert.ToInt32(identity.FindFirst("Id").Value);
+            var result = await _requestService.UpdateApprovedInformation(requestAndDetails, id);
+            return Ok(result);
+        }
+
         //[HttpPut]
         //[Route("update/{id}")]
         //public async Task<IActionResult> Update(ReqDetails reqDetail)
