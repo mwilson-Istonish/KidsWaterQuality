@@ -102,7 +102,7 @@ namespace CDPHE.H20.Services
                     // Set LoginToken
                     try
                     {
-                        var setLoginToken = await connection.ExecuteAsync(query, new { Guid = sixDigitNumber, TimeStamp = DateTime.Now.AddMinutes(10), Email = email });
+                        var setLoginToken = await connection.ExecuteAsync(query, new { Guid = sixDigitNumber, TimeStamp = DateTime.Now.AddMinutes(480), Email = email });
                         
                         // Send Email
                         EmailService emailService = new EmailService();
