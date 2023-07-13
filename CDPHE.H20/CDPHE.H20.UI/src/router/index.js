@@ -113,6 +113,7 @@ axios.interceptors.response.use(
 );
 
 router.beforeEach((to, from, next) => {
+  console.log(to, from)
   var jwt = JSON.parse(localStorage.getItem('jwt'))
   if(to.meta.authRequired) {
     if (to.name == "UserManagement" && !store.getters.userManagementAccess) {
