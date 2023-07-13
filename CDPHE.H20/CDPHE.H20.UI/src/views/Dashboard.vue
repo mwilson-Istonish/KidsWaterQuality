@@ -12,9 +12,9 @@ import AdminSettings from '@/components/modals/AdminSettings.vue'
                         <div class="row">
                             <div class="col-xl-2 h20-dashboard-col">
                                 <div class="card h20-dashboard-card">
-                                    <!-- <span v-show="$store.state.count > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:16px">
-                                        {{$store.state.count}}
-                                    </span> -->
+                                    <span v-show="getNotificationCount > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:16px">
+                                        {{getNotificationCount}}
+                                    </span>
                                     <div class="card-body text-center h20-dashboard-card-body" v-on:click="navigateToPage('/Requests')">
                                         My <br>Requests<br>
                                         <i class="fa-solid fa-envelope h20-dashboard-card-icon"></i>
@@ -64,6 +64,7 @@ import AdminSettings from '@/components/modals/AdminSettings.vue'
 </template>
 
 <script>
+  import RequestsMixin from '../mixins/RequestsMixin'
   import { useStore } from "vuex";
   export default {
     components: {
@@ -74,9 +75,20 @@ import AdminSettings from '@/components/modals/AdminSettings.vue'
         requestCount: 1,
         store: useStore(),
       }
+    },     
+    mixins: [RequestsMixin],
+    async created() {
+        if(this.store.getters.getUserRole == "Provider"){
+            await this.GetRequestsAPI(this.store.getters.getUser.Id);
+        }
+        else if(this.store.getters.getUserRole == "User Manager") {
+            await this.getAccountRequests();
+        }
+        else {
+            console.log("in")
+            await this.GetRequestsStaffAPI(this.store.getters.getUser.Id);
+        }   
     },
-      
-    created() {},
 
     methods: {
         navigateToPage(page) {
@@ -84,6 +96,28 @@ import AdminSettings from '@/components/modals/AdminSettings.vue'
         },
         incrementCount() {
             this.store.commit('increment', 2)
+        }
+    },
+    computed: {
+        getNotificationCount() {
+            if (this.requests.length > 0) {
+                if (this.store.getters.getUserRole == "Provider") {
+                    return this.requests.filter(g => g.Status.toLowerCase() == "new" || g.Status.toLowerCase() == "approved").length
+                }
+                else if (this.store.getters.getUserRole == "WQ Staff") {
+                    return this.requests.filter(g => g.Status.toLowerCase() == "draft" || g.Status.toLowerCase() == "submitted" || g.Status.toLowerCase() == "complete").length
+                }
+                else if (this.store.getters.getUserRole == "User Manager") {
+                    return this.accountCreationRequests.length
+                }
+                else {
+                    return 0
+                }
+            }
+            else {
+                return 0;
+            }
+
         }
     }
   }

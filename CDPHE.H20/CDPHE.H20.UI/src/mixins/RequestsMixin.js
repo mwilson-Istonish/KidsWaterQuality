@@ -22,6 +22,7 @@ export default {
         currentRequestFiles: [],
         budget: {},
         profile: {},
+        rateTable: [],
        }
     },
     methods: {
@@ -45,6 +46,17 @@ export default {
             console.log(error)
         })
       },
+      async getRateTableInfo(county) {
+        await axios
+        .get(this.API_URL + "v1/request/ratetable/" + county)
+        .then((response) => {
+            this.rateTable = response.data;
+            return this.rateTable;
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+      },
       async GetRequestsAPI(id) {
         if(id){
           await axios
@@ -57,7 +69,7 @@ export default {
               console.log(error)
           })
         }
-        else{
+        else {
           await axios
           .get(this.API_URL + "v1/request/getallrequests")
           .then((response) => {
@@ -68,7 +80,28 @@ export default {
               console.log(error)
           })
         }
+      },
+      async GetRequestsStaffAPI(id) {
+        await axios
+        .get(this.API_URL + "v1/request/employee/" + id)
+        .then((response) => {
+            this.requests = [];
+            this.requests = this.requests.concat(response.data);
+            return this.requests;
+        })
+        .catch((error) => {
+            console.log(error)
+        })
 
+        await axios
+        .get(this.API_URL + "v1/request/draft")
+        .then((response) => {
+            this.requests = this.requests.concat(response.data);
+            return this.requests;
+        })
+        .catch((error) => {
+            console.log(error)
+        })
       },
       async GetRemedialActions() {
         await axios
@@ -144,12 +177,43 @@ export default {
         .get(this.API_URL + "v1/user/profile/" + wqcid)
         .then((response) => {
             this.profile = response.data;
-            console.log(this.profile)
             return this.profile;
         })
         .catch((error) => {
             console.log(error)
         })
-      }
+      },
+      async submitRequestAPI(request) {
+        await axios
+        .post(this.API_URL + "v1/request/add", request)
+        .then((response) => {})
+        .catch((error) => {
+            console.log(error)
+        })
+      },
+      async updateRequestAPI(request) {
+        await axios
+        .put(this.API_URL + "v1/request/update", request)
+        .then((response) => {})
+        .catch((error) => {
+            console.log(error)
+        })
+      },
+      async updateRequestStatusAPI(requestId, newStatus) {
+        await axios
+        .post(this.API_URL + "v1/status/" + requestId + "/" + newStatus)
+        .then((response) => {})
+        .catch((error) => {
+            console.log(error)
+        })
+      },
+      async updateApprovedDataAPI(request) {
+        await axios
+        .post(this.API_URL + "v1/requestdetail/approved", request)
+        .then((response) => {})
+        .catch((error) => {
+            console.log(error)
+        })
+      },
     },
 }

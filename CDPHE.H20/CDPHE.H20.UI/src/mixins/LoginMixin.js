@@ -49,7 +49,6 @@ export default {
             })
         },
         async requestUserAccount(firstName, lastName, email) {
-            console.log("mxiin")
             await axios
             .post(this.API_URL + "v1/user/requestaccount/" + firstName + "/" + lastName + "/" + email)
             .then((response) => {
