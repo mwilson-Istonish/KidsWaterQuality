@@ -1,8 +1,3 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import AdminSettings from '@/components/modals/AdminSettings.vue'
-</script>
-
 <template>
     <div class="h20-dashboard-view h20-full-height">
         <div class="row h20-full-height">
@@ -66,6 +61,8 @@ import AdminSettings from '@/components/modals/AdminSettings.vue'
 <script>
   import RequestsMixin from '../mixins/RequestsMixin'
   import { useStore } from "vuex";
+  import AdminSettings from '@/components/modals/AdminSettings.vue';
+  
   export default {
     components: {
         AdminSettings
