@@ -91,6 +91,7 @@ function unauthenticated() {
 
 axios.interceptors.request.use(
   async (config) => {
+    console.log(store.getters.getJWT)
     const jwt = store.getters.getJWT;
     if (jwt != null) {
       config.headers.authorization = `Bearer ${jwt}`
