@@ -91,7 +91,6 @@ function unauthenticated() {
 
 axios.interceptors.request.use(
   async (config) => {
-    console.log(store.getters.getJWT)
     const jwt = store.getters.getJWT;
     if (jwt != null) {
       config.headers.authorization = `Bearer ${jwt}`
@@ -114,7 +113,6 @@ axios.interceptors.response.use(
 );
 
 router.beforeEach((to, from, next) => {
-  console.log(to, from)
   var jwt = JSON.parse(localStorage.getItem('jwt'))
   if(to.meta.authRequired) {
     if (to.name == "UserManagement" && !store.getters.userManagementAccess) {
