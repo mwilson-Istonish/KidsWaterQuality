@@ -104,6 +104,8 @@ import AdminSettings from '@/components/modals/AdminSettings.vue'
         getNotificationCount() {
             console.log("notifications")
             console.log(this.requests)
+            console.log(this.store)
+            console.log(this.store.getters.getUserRole)
             if (this.requests.length > 0) {
                 if (this.store.getters.getUserRole == "Provider") {
                     return this.requests.filter(g => g.Status.toLowerCase() == "new" || g.Status.toLowerCase() == "approved").length
