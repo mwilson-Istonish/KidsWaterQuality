@@ -86,6 +86,8 @@ import AdminSettings from '@/components/modals/AdminSettings.vue'
         }
         else {
             console.log("Staff")
+            console.log("store coming")
+            console.log(this.store)
             await this.GetRequestsStaffAPI(this.store.getters.getUser.Id);
         }   
     },
