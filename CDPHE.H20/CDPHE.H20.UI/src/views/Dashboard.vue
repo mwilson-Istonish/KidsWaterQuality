@@ -1,8 +1,3 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import AdminSettings from '@/components/modals/AdminSettings.vue'
-</script>
-
 <template>
     <div class="h20-dashboard-view h20-full-height">
         <div class="row h20-full-height">
@@ -66,6 +61,8 @@ import AdminSettings from '@/components/modals/AdminSettings.vue'
 <script>
   import RequestsMixin from '../mixins/RequestsMixin'
   import { useStore } from "vuex";
+  import AdminSettings from '@/components/modals/AdminSettings.vue';
+  
   export default {
     components: {
         AdminSettings
@@ -85,7 +82,8 @@ import AdminSettings from '@/components/modals/AdminSettings.vue'
             await this.getAccountRequests();
         }
         else {
-            console.log("in")
+            console.log("Staff")
+            console.log(this.store.getters.getUser.Id)
             await this.GetRequestsStaffAPI(this.store.getters.getUser.Id);
         }   
     },
@@ -100,6 +98,8 @@ import AdminSettings from '@/components/modals/AdminSettings.vue'
     },
     computed: {
         getNotificationCount() {
+            console.log("notifications")
+            console.log(this.store.getters.getUserRole)
             if (this.requests.length > 0) {
                 if (this.store.getters.getUserRole == "Provider") {
                     return this.requests.filter(g => g.Status.toLowerCase() == "new" || g.Status.toLowerCase() == "approved").length

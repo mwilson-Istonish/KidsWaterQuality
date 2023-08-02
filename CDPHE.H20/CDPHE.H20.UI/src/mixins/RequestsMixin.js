@@ -82,6 +82,7 @@ export default {
         }
       },
       async GetRequestsStaffAPI(id) {
+        console.log("it's this one")
         await axios
         .get(this.API_URL + "v1/request/employee/" + id)
         .then((response) => {
@@ -93,6 +94,7 @@ export default {
             console.log(error)
         })
 
+        console.log("it's this one")
         await axios
         .get(this.API_URL + "v1/request/draft")
         .then((response) => {
