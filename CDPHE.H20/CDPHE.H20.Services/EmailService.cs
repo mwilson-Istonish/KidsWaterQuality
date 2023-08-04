@@ -9,25 +9,38 @@ using System.Text.Json;
 using AWSSDK;
 using Amazon.SimpleEmailV2.Model;
 using Amazon.SimpleEmailV2;
+using Newtonsoft.Json.Linq;
+using CDPHE.H20.Data.Context;
+using CDPHE.H20.Data.Queries;
+using Dapper;
 
 namespace CDPHE.H20.Services
 {
     // private readonly IAmazonSimpleEmailService _amazonSimpleEmailService;
-    
+
     public interface IEmailService
     {
         public Task<string> SendEmailAsync(List<string> toAddresses, string bodyHtml, string bodyText, string subject);
         public Task<string> SendLoginEmail(string email, string token);
+        public Task<string> SendEmailForNewPlan(int requestId);
+        public Task<string> SendEmailForPlanAccepted(int requestId);
+        public Task<string> SendEmailForModificationsRequested(int requestId);
+        public Task<string> SendEmailForPlanResent(int requestId);
+        public Task<string> SendEmailForPlanApproved(int requestId);
+        public Task<string> SendEmailForPlanCompleted(int requestId);
+        public Task<string> SendEmailForPlanInComplete(int requestId);
+        public Task<string> SendEmailForPlanPaid(int requestId);
     }
 
     public class EmailService : IEmailService
     {
+        private readonly DapperContext _dbContext = new DapperContext();
         public EmailService() { }
 
         public async Task<string> SendEmailAsync(List<string> toAddresses, string bodyHtml, string bodyText, string subject)
         {
-            string accessKey = "";
-            string secretKey = "";
+            string accessKey = "AKIAUGNZNL4SKXYKFY6Y";
+            string secretKey = "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";
             string msg = "{ Success }";
 
             // Create an instance of the Amazon Simple Email Service V2 client
@@ -90,6 +103,153 @@ namespace CDPHE.H20.Services
             return "true";
         }
 
+        public async Task<string> SendEmailForNewPlan(int requestId)
+        {
+            ContactDetails contactDetails = new ContactDetails();
+            contactDetails = await GetDetails(requestId);
+            List<string> emails = new List<string>();
+            string emailTemplate = EmailTemplate();
+            string customContent = @"
+                    <p>. Please log into the portal to complete this task.</p>";
+            string emailBody = emailTemplate.Replace("###CONTENT###", customContent);
+            emails.Add(contactDetails.ProviderEmail);
+            var response = await SendEmailAsync(emails, emailBody, emailBody, "A remediation plan has been submitted.");
+            return "true";
+        }
+
+        /// <summary>
+        /// The provider accepts the plan sent by the employee
+        /// </summary>
+        /// <param name="requestId"></param>
+        /// <returns>Call to email with details</returns>
+        public async Task<string> SendEmailForPlanAccepted(int requestId)
+        {
+            ContactDetails contactDetails = new ContactDetails();
+            contactDetails = await GetDetails(requestId);
+            List<string> emails = new List<string>();
+            string emailTemplate = EmailTemplate();
+            string customContent = @"
+                    <p>. Please log into the portal to complete this task.""</p>";
+            string emailBody = emailTemplate.Replace("###CONTENT###", customContent);
+            emails.Add(contactDetails.EmployeeEmail);
+            var response = await SendEmailAsync(emails, emailBody, emailBody, "A remediation plan has been submitted.");
+            return "true";
+        }
+
+        /// <summary>
+        /// The provider requests modifications to the plan.
+        /// </summary>
+        /// <param name="requestId"></param>
+        /// <returns>Call to email with details</returns>
+        public async Task<string> SendEmailForModificationsRequested(int requestId)
+        {
+            ContactDetails contactDetails = new ContactDetails();
+            contactDetails = await GetDetails(requestId);
+            List<string> emails = new List<string>();
+            string emailTemplate = EmailTemplate();
+            string customContent = @"
+                    <p>. Please log into the portal to complete this task.""</p>";
+            string emailBody = emailTemplate.Replace("###CONTENT###", customContent);
+            emails.Add(contactDetails.EmployeeEmail);
+            var response = await SendEmailAsync(emails, emailBody, emailBody, "A remediation plan has been submitted.");
+            return "true";
+        }
+
+        /// <summary>
+        /// The employee resends the plan to the provider adding notes after modifications were requested.
+        /// </summary>
+        /// <param name="requestId"></param>
+        /// <returns>Call to email with details</returns>
+        public async Task<string> SendEmailForPlanResent(int requestId)
+        {
+            ContactDetails contactDetails = new ContactDetails();
+            contactDetails = await GetDetails(requestId);
+            List<string> emails = new List<string>();
+            string emailTemplate = EmailTemplate();
+            string customContent = @"
+                    <p>. Please log into the portal to complete this task.""</p>";
+            string emailBody = emailTemplate.Replace("###CONTENT###", customContent);
+            emails.Add(contactDetails.ProviderEmail);
+            var response = await SendEmailAsync(emails, emailBody, emailBody, "A remediation plan has been submitted.");
+            return "true";
+        }
+
+        /// <summary>
+        /// The employee submits the plan for approval. Fiscal team is notified.
+        /// </summary>
+        /// <param name="requestId"></param>
+        /// <returns>Call to email with details</returns>
+        public async Task<string> SendEmailForPlanApproved(int requestId)
+        {
+            ContactDetails contactDetails = new ContactDetails();
+            contactDetails = await GetDetails(requestId);
+            List<string> emails = new List<string>();
+            string emailTemplate = EmailTemplate();
+            string customContent = @"
+                    <p>. Please log into the portal to complete this task.""</p>";
+            string emailBody = emailTemplate.Replace("###CONTENT###", customContent);
+            emails.Add(contactDetails.ProviderEmail);
+            var response = await SendEmailAsync(emails, emailBody, emailBody, "A remediation plan has been submitted.");
+            return "true";
+        }
+
+        /// <summary>
+        /// The provider completes the plan and submits it to the employee with receipts, invoice, and W-9.
+        /// </summary>
+        /// <param name="requestId"></param>
+        /// <returns>Call to email with details</returns>
+        public async Task<string> SendEmailForPlanCompleted(int requestId)
+        {
+            ContactDetails contactDetails = new ContactDetails();
+            contactDetails = await GetDetails(requestId);
+            List<string> emails = new List<string>();
+            string emailTemplate = EmailTemplate();
+            string customContent = @"
+                    <p>. Please log into the portal to complete this task.""</p>";
+            string emailBody = emailTemplate.Replace("###CONTENT###", customContent);
+            emails.Add(contactDetails.EmployeeEmail);
+            var response = await SendEmailAsync(emails, emailBody, emailBody, "A remediation plan has been submitted.");
+            return "true";
+        }
+
+        /// <summary>
+        /// The employee marks the plan as incomplete and notifies the provider to provide additional information.
+        /// </summary>
+        /// <param name="requestId"></param>
+        /// <returns>Call to email with details</returns>
+        public async Task<string> SendEmailForPlanInComplete(int requestId)
+        {
+            ContactDetails contactDetails = new ContactDetails();
+            contactDetails = await GetDetails(requestId);
+            List<string> emails = new List<string>();
+            string emailTemplate = EmailTemplate();
+            string customContent = @"
+                    <p>. Please log into the portal to complete this task.""</p>";
+            string emailBody = emailTemplate.Replace("###CONTENT###", customContent);
+            emails.Add(contactDetails.ProviderEmail);
+            var response = await SendEmailAsync(emails, emailBody, emailBody, "A remediation plan has been submitted.");
+            return "true";
+        }
+
+        /// <summary>
+        /// The employee emails the provider to say that payment has been submitted. Fiscal is notified.
+        /// </summary>
+        /// <param name="requestId"></param>
+        /// <returns>Call to email with details</returns>
+        public async Task<string> SendEmailForPlanPaid(int requestId)
+        {
+            ContactDetails contactDetails = new ContactDetails();
+            contactDetails = await GetDetails(requestId);
+            List<string> emails = new List<string>();
+            string emailTemplate = EmailTemplate();
+            string customContent = @"
+                    <p>. Please log into the portal to complete this task.""</p>";
+            string emailBody = emailTemplate.Replace("###CONTENT###", customContent);
+            emails.Add(contactDetails.ProviderEmail);
+            var response = await SendEmailAsync(emails, emailBody, emailBody, "A remediation plan has been submitted.");
+            return "true";
+        }
+
         public string EmailBody(string token)
         {
             string email = @"
@@ -149,5 +309,83 @@ namespace CDPHE.H20.Services
 
             return email;
         }
-    }
+
+        public string EmailTemplate()
+        {
+            string email = @"
+            <!DOCTYPE html>
+            <html lang=""en"">
+            <head>
+                <meta charset=""UTF-8"">
+                <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                <title>Email Template</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        font-size: 14px;
+                        line-height: 1.5;
+                        color: #333;
+                    }
+                    .container {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        padding: 20px;
+                    }
+                    .logo {
+                        display: block;
+                        max-width: 100%;
+                        height: auto;
+                        margin-bottom: 20px;
+                    }
+                    .subject {
+                        font-weight: bold;
+                        font-size: 18px;
+                        margin-bottom: 10px;
+                    }
+                    .login-link {
+                        display: inline-block;
+                        background-color: #007BFF;
+                        color: #fff;
+                        padding: 10px 20px;
+                        text-decoration: none;
+                        border-radius: 3px;
+                    }
+                    .footer {
+                        margin-top: 20px;
+                        font-size: 12px;
+                    }
+                    .footer a {
+                        color: #007BFF;
+                        text-decoration: none;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class=""container"">
+                    <img src=""https://cdphe.colorado.gov/sites/cdphe/files/logo.svg"" alt=""CDPHE Logo"" class=""logo"">
+                    ###CONTENT###";
+
+            return email;
+        }
+
+        public async Task<ContactDetails> GetDetails(int requestId)
+        {
+            var query = EmailQuery.GetContactDetails();
+            
+            using (var connection = _dbContext.CreateConnection())
+            {
+                var response = await connection.QueryFirstOrDefaultAsync<ContactDetails>(query, new { RequestIdValue = requestId });
+                return response;
+            }
+        }
+
+        public class ContactDetails
+        {
+            public string EmployeeName { get; set; }
+            public string ProviderName { get; set; }
+            public string EmployeeEmail { get; set; }
+            public string ProviderEmail { get; set; }
+            public string FacilityName { get; set; }
+        }
+    } 
 }
