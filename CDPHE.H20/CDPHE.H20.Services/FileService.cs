@@ -94,9 +94,13 @@ namespace CDPHE.H20.Services
             {
                 return "Invoice";
             }
-            else
+            else if (inputName.ToLower().IndexOf("receipt") > -1)
             {
                 return "Receipt";
+            }
+            else
+            {
+                return "W-9";
             }
         }
 
