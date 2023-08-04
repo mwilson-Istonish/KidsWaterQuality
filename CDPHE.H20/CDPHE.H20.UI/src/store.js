@@ -34,7 +34,7 @@ const store = new Vuex.Store({
         return getters.getUserRole == "Admin"
     },
     waterForKidsAccess(state, getters) {
-        return state.waterForKidsRoles.includes(getters.getUserRole);
+        return state.waterForKidsRoles.includes(getters.getUserRole) || getters.isAdmin;
     },
     userManagementAccess(state, getters) {
         return state.userManagementRoles.includes(getters.getUserRole) || getters.isAdmin

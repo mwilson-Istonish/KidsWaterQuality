@@ -26,11 +26,16 @@ export default {
        }
     },
     methods: {
-      async getRequestDetailsAPI(requestId) {
+      async getRequestDetailsAPI(requestId, isRefresh) {
         await axios
         .get(this.API_URL + "v1/request/" + requestId)
         .then((response) => {
+          if(isRefresh){
+            this.currentRequestDetails.Notes = response.data.Notes;
+          }
+          else {
             this.currentRequestDetails = response.data;
+          }
         })
         .catch((error) => {
             console.log(error)
@@ -201,13 +206,28 @@ export default {
             console.log(error)
         })
       },
-      async updateRequestStatusAPI(requestId, newStatus) {
+      async updateRequestStatusAPI(requestId, newStatus, isResent) {
         await axios
         .post(this.API_URL + "v1/status/" + requestId + "/" + newStatus)
         .then((response) => {})
         .catch((error) => {
             console.log(error)
         })
+        var emailSendPath = newStatus.toLowerCase() == "new" && !isResent ? "newplan" :
+                      newStatus.toLowerCase() == "new" && isResent ? "planresent" :
+                      newStatus.toLowerCase() == "submitted" ? "planaccepted" :
+                      newStatus.toLowerCase() == "approved" ? "planapproved" :
+                      newStatus.toLowerCase() == "complete" && !isResent ? "plancompleted" :
+                      newStatus.toLowerCase() == "complete" && isResent ? "planincomplete" :
+                      newStatus.toLowerCase() == "paid" ? "planpaid" : "";
+        if(emailSendPath != "") {
+          await axios
+          .post(this.API_URL + "v1/email/" + emailSendPath + "/" + requestId)
+          .then((response) => {})
+          .catch((error) => {
+              console.log(error)
+          })
+        }
       },
       async updateApprovedDataAPI(request) {
         await axios

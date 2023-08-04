@@ -212,13 +212,13 @@
                                                     <div class="col-xl-6">
                                                         <label>Expected Materials Cost</label>
                                                         <div class="input-group mb-3">
-                                                            <input type="number" v-model="detail.expectedMaterialCost" :disabled="!canEditPlan" class="form-control">
+                                                            <input type="number" pattern="\d*\.?\d{0,2}" @input="detail.expectedMaterialCost = detail.expectedMaterialCost ? Number(detail.expectedMaterialCost.toString().replace(/[^\d.]/g, '').substr(0, 6)) : 0" v-model="detail.expectedMaterialCost" :disabled="!canEditPlan" class="form-control">
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-6">
                                                         <label>{{detail.inHouseLabor ? "" : "Expected "}}Labor Cost</label>
                                                         <div class="input-group mb-3">
-                                                            <input type="number" v-model="detail.expectedLaborCost" :disabled="!canEditPlan || detail.inHouseLabor" class="form-control">
+                                                            <input type="number" pattern="\d*\.?\d{0,2}" @input="detail.expectedLaborCost = detail.expectedLaborCost ? Number(detail.expectedLaborCost.toString().replace(/[^\d.]/g, '').substr(0, 6)) : 0" v-model="detail.expectedLaborCost" :disabled="!canEditPlan || detail.inHouseLabor" class="form-control">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -226,13 +226,13 @@
                                                     <div class="col-xl-6">
                                                         <label>Actual Materials Cost</label>
                                                         <div class="input-group mb-3">
-                                                            <input type="number" v-model="detail.actualMaterialCost" :disabled="!fundedAndProvider" class="form-control">
+                                                            <input type="number" pattern="\d*\.?\d{0,2}" @input="detail.actualMaterialCost = detail.actualMaterialCost ? Number(detail.actualMaterialCost.toString().replace(/[^\d.]/g, '').substr(0, 6)) : 0" v-model="detail.actualMaterialCost" :disabled="!fundedAndProvider" class="form-control">
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-6">
                                                         <label>Actual Labor Cost</label>
                                                         <div class="input-group mb-3">
-                                                            <input type="number" v-model="detail.actualLaborCost" :disabled="!fundedAndProvider" class="form-control">
+                                                            <input type="number" pattern="\d*\.?\d{0,2}" @input="detail.actualLaborCost = detail.actualLaborCost ? Number(detail.actualLaborCost.toString().replace(/[^\d.]/g, '').substr(0, 6)) : 0" v-model="detail.actualLaborCost" :disabled="!fundedAndProvider" class="form-control">
                                                         </div>
                                                     </div>
                                                 </div><hr>
@@ -267,6 +267,7 @@
                                                 </div>
                                             </div><hr>
                                             <div v-show="showFileUploadSection">
+                                                <h4>Choose your file and then press the upload button.</h4><hr>
                                                 <div class="row">
                                                     <div class="col">
                                                         <h4>W-9</h4>
@@ -274,7 +275,7 @@
                                                             <a style="font-size:18px" :href="file.Url">{{ file.Name }}</a>
                                                         </div>
                                                         <div v-show="showFileUploadButton">
-                                                            <input type="file" id="newW9" class="btn btn-secondary" placeholder="Upload W9">&nbsp;<button class="btn btn-primary" disabled type="button" id="newW9Button" v-on:click="uploadW9()">Upload</button>
+                                                            <input type="file" id="newW9" accept="application/pdf, image/png, image/jpeg, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, image/heic, video/hevc, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/tiff" class="btn btn-secondary" placeholder="Upload W9">&nbsp;<button class="btn btn-primary" disabled type="button" id="newW9Button" v-on:click="uploadW9()">Upload</button>
                                                         </div>
                                                     </div>
                                                 </div><hr>
@@ -285,7 +286,7 @@
                                                             <a style="font-size:18px" :href="file.Url">{{ file.Name }}</a>
                                                         </div>
                                                         <div v-show="showFileUploadButton">
-                                                            <input type="file" id="newInvoice" class="btn btn-secondary" placeholder="Upload Invoice">&nbsp;<button class="btn btn-primary" id="newInvoiceButton" disabled type="button" v-on:click="uploadInvoice()">Upload</button>
+                                                            <input type="file" id="newInvoice" accept="application/pdf, image/png, image/jpeg, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, image/heic, video/hevc, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/tiff" class="btn btn-secondary" placeholder="Upload Invoice">&nbsp;<button class="btn btn-primary" id="newInvoiceButton" disabled type="button" v-on:click="uploadInvoice()">Upload</button>
                                                         </div>
                                                     </div>
                                                 </div><hr>
@@ -296,7 +297,7 @@
                                                             <a style="font-size:18px" :href="file.Url">{{ file.Name }}</a>
                                                         </div>
                                                         <div v-show="showFileUploadButton">
-                                                            <input type="file" id="newReceipt" class="btn btn-secondary" placeholder="Upload Receipt">&nbsp;<button class="btn btn-primary" id="newReceiptButton" disabled type="button" v-on:click="uploadReceipt()">Upload</button>
+                                                            <input type="file" id="newReceipt" accept="application/pdf, image/png, image/jpeg, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, image/heic, video/hevc, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/tiff" class="btn btn-secondary" placeholder="Upload Receipt">&nbsp;<button class="btn btn-primary" id="newReceiptButton" disabled type="button" v-on:click="uploadReceipt()">Upload</button>
                                                         </div>   
                                                     </div>
                                                 </div>
@@ -309,8 +310,8 @@
                                             </div>
                                             <div class="col text-end">
                                                 <button disabled class="btn btn-dark">Status: {{ this.currentRequestDetails.status }}</button>&nbsp;
-                                                <button class="btn btn-danger" v-if="statusChangeSecondaryButtonNewStatus != 'x'" v-on:click="updateRequestStatusModal(statusChangeSecondaryButtonNewStatus)">Return: {{ statusChangeSecondaryButtonNewStatus }}</button>&nbsp;
-                                                <button class="btn btn-primary" v-if="statusChangeButtonNewStatus != 'x' && statusChangeButtonNewStatus != 'Update Request'" v-on:click="updateRequestStatusModal(statusChangeButtonNewStatus)">Update: {{ statusChangeButtonNewStatus }}</button>
+                                                <button class="btn btn-danger" v-if="statusChangeSecondaryButtonNewStatus != 'x'" v-on:click="updateRequestStatusModal(statusChangeSecondaryButtonNewStatus, true)">Return: {{ statusChangeSecondaryButtonNewStatus }}</button>&nbsp;
+                                                <button class="btn btn-primary" v-if="statusChangeButtonNewStatus != 'x' && statusChangeButtonNewStatus != 'Update Request'" v-on:click="updateRequestStatusModal(statusChangeButtonNewStatus, false)">Update: {{ statusChangeButtonNewStatus }}</button>
                                                 <button class="btn btn-primary" v-if="statusChangeButtonNewStatus == 'Update Request'" v-on:click="updateFundedData()">{{ statusChangeButtonNewStatus }}</button>
                                             </div>
                                         </div>
@@ -480,10 +481,18 @@
             CreatedBy: "",
             CreatedAt: ""
         },
-        validForm: true
+        validForm: true,
+        isResent: false,
       }
     },
-      
+    watch: {
+        'currentRequestDetails.details': {
+            deep: true,
+            handler() {
+                this.updateTotals();
+            }
+        }
+    },
     methods: {
         async getRequestDetails(requestId) {
             $('#RequestDetailsModal').modal('show')
@@ -495,6 +504,9 @@
         },
         getOperator(operatorCode) {
             return operatorCode == 1 ? "< " : operatorCode == 2 ? "> " : "";
+        },
+        sanitizeInput(toSanitize) {
+            toSanitize = toSanitize.toString().replace(/[^\d]/g, '').substr(0, 6);
         },
         async uploadW9() {
             await this.uploadFile(this.newW9.toString(), "W9", this.newW9Extension, this.currentRequestDetails.id);
@@ -526,9 +538,10 @@
             var inputEle = document.getElementById("newReceipt");
             inputEle.value = ''
         },
-        updateRequestStatusModal(status) {
+        updateRequestStatusModal(status, isResent) {
             this.newStatus = status;
             this.validForm = true;
+            this.isResent = isResent;
             $('#RequestStatusUpdateModal').modal('show')
         },
         async updateRequestStatus() {
@@ -551,7 +564,7 @@
                     console.log(this.validForm)
                     if(this.validForm) {
                         await this.updateRequestAPI(this.currentRequestDetails)
-                        await this.updateRequestStatusAPI(this.currentRequestDetails.id, this.newStatus)
+                        await this.updateRequestStatusAPI(this.currentRequestDetails.id, this.newStatus, this.isResent)
                         this.statusUpdated = true;
                         await this.getRequestDetailsAPI(this.currentRequestDetails.id)
                         this.emitter.emit('updateRequests', true);
@@ -589,11 +602,30 @@
             this.newNote.RequestId = this.currentRequestDetails.id
             await this.addNoteAPI(this.newNote);
             this.newNote.Text = "";
-            await this.getRequestDetailsAPI(this.currentRequestDetails.id)
+            await this.getRequestDetailsAPI(this.currentRequestDetails.id, true)
             this.scrollToNotesBottom()
         },
         scrollToNotesBottom(){
             $('#requestDetailsModalRow').scrollTop($('#requestDetailsModalRow')[0].scrollHeight)
+        },   
+        updateTotals() {   
+            var currentStatus = this.currentRequestDetails.status
+            if(currentStatus && currentStatus != "" && currentStatus != null && (currentStatus.toLowerCase() == "new" || currentStatus.toLowerCase() == "draft")){
+                var totalCost = 0;
+                var totalCostMaterials = 0;
+                var totalCostLabor = 0;
+                for(var i = 0; i < this.currentRequestDetails.details.length; i++) {
+                    var currDetail = this.currentRequestDetails.details[i]
+                    if(currDetail.remedialActionId && currDetail.remedialActionId != 0) {
+                        totalCost += currDetail.expectedMaterialCost + currDetail.expectedLaborCost
+                        totalCostMaterials += currDetail.expectedMaterialCost
+                        totalCostLabor += currDetail.expectedLaborCost
+                    }
+                }
+                this.currentRequestDetails.totalCost = totalCost
+                this.currentRequestDetails.totalCostMaterials = totalCostMaterials
+                this.currentRequestDetails.totalCostLabor = totalCostLabor
+            }
         }
     },
     computed: {
@@ -696,7 +728,7 @@
             else {
                 return []
             }
-        }
+        },
     }
   }
 </script>
