@@ -56,14 +56,16 @@
                     </div>
                     <div class="row h20-modal-spacing">
                         <div class="col-12">
-                            <label>Code:</label>
-                            <span id="codeError" class="h20-error-text"></span> 
-                            <div class="h20-input-group input-group mb-3">
-                                <input v-model="loginCode" type="text" class="form-control">
-                            </div>    
-                            <div>
-                                <button class="btn btn-md h20-btn" id="CodeSubmitBtn" v-on:click="login()">Submit</button>
-                            </div>
+                            <form @submit="login()" id="loginFormCode">
+                                <label>Code:</label>
+                                <span id="codeError" class="h20-error-text"></span> 
+                                <div class="h20-input-group input-group mb-3">
+                                    <input v-model="loginCode" type="text" class="form-control">
+                                </div>    
+                                <div>
+                                    <button class="btn btn-md h20-btn" id="CodeSubmitBtn" v-on:click="login()">Submit</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -150,6 +152,7 @@ export default {
             }
         },
         async login() {
+            event.preventDefault();
             var buttonEle = document.getElementById("CodeSubmitBtn");
             var errorMessageEle = document.getElementById("codeError");
             buttonEle.disabled = true;
