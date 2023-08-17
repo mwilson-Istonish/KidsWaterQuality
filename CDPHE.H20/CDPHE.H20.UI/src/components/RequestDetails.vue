@@ -212,13 +212,25 @@
                                                     <div class="col-xl-6">
                                                         <label>Expected Materials Cost</label>
                                                         <div class="input-group mb-3">
-                                                            <input type="number" pattern="\d*\.?\d{0,2}" @input="detail.expectedMaterialCost = detail.expectedMaterialCost ? Number(detail.expectedMaterialCost.toString().replace(/[^\d.]/g, '').substr(0, 6)) : 0" v-model="detail.expectedMaterialCost" :disabled="!canEditPlan" class="form-control">
+                                                            <input
+                                                                type="number"
+                                                                pattern="\d*\.?\d{0,2}"
+                                                                @input="detail.expectedMaterialCost = detail.expectedMaterialCost ? Number(detail.expectedMaterialCost.toString().replace(/[^\d.]/g, '').substr(0, 6)).toString().replace(/^0([1-9])/, '$1') : 0"
+                                                                v-model="detail.expectedMaterialCost"
+                                                                :disabled="!canEditPlan"
+                                                                class="form-control">
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-6">
                                                         <label>{{detail.inHouseLabor ? "" : "Expected "}}Labor Cost</label>
                                                         <div class="input-group mb-3">
-                                                            <input type="number" pattern="\d*\.?\d{0,2}" @input="detail.expectedLaborCost = detail.expectedLaborCost ? Number(detail.expectedLaborCost.toString().replace(/[^\d.]/g, '').substr(0, 6)) : 0" v-model="detail.expectedLaborCost" :disabled="!canEditPlan || detail.inHouseLabor" class="form-control">
+                                                            <input
+                                                                type="number"
+                                                                pattern="\d*\.?\d{0,2}"
+                                                                @input="detail.expectedLaborCost = detail.expectedLaborCost ? Number(detail.expectedLaborCost.toString().replace(/[^\d.]/g, '').substr(0, 6)).toString().replace(/^0([1-9])/, '$1') : 0"
+                                                                v-model="detail.expectedLaborCost" 
+                                                                :disabled="!canEditPlan || detail.inHouseLabor" 
+                                                                class="form-control">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -226,13 +238,24 @@
                                                     <div class="col-xl-6">
                                                         <label>Actual Materials Cost</label>
                                                         <div class="input-group mb-3">
-                                                            <input type="number" pattern="\d*\.?\d{0,2}" @input="detail.actualMaterialCost = detail.actualMaterialCost ? Number(detail.actualMaterialCost.toString().replace(/[^\d.]/g, '').substr(0, 6)) : 0" v-model="detail.actualMaterialCost" :disabled="!fundedAndProvider" class="form-control">
+                                                            <input
+                                                                type="number"
+                                                                pattern="\d*\.?\d{0,2}"
+                                                                @input="detail.actualMaterialCost = detail.actualMaterialCost ? Number(detail.actualMaterialCost.toString().replace(/[^\d.]/g, '').substr(0, 6)).toString().replace(/^0([1-9])/, '$1') : 0"
+                                                                v-model="detail.actualMaterialCost"
+                                                                :disabled="!fundedAndProvider"
+                                                                class="form-control">
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-6">
                                                         <label>Actual Labor Cost</label>
                                                         <div class="input-group mb-3">
-                                                            <input type="number" pattern="\d*\.?\d{0,2}" @input="detail.actualLaborCost = detail.actualLaborCost ? Number(detail.actualLaborCost.toString().replace(/[^\d.]/g, '').substr(0, 6)) : 0" v-model="detail.actualLaborCost" :disabled="!fundedAndProvider" class="form-control">
+                                                            <input type="number"
+                                                                pattern="\d*\.?\d{0,2}"
+                                                                @input="detail.actualLaborCost = detail.actualLaborCost ? Number(detail.actualLaborCost.toString().replace(/[^\d.]/g, '').substr(0, 6)).toString().replace(/^0([1-9])/, '$1') : 0"
+                                                                v-model="detail.actualLaborCost"
+                                                                :disabled="!fundedAndProvider"
+                                                                class="form-control">
                                                         </div>
                                                     </div>
                                                 </div><hr>
@@ -275,7 +298,16 @@
                                                             <a style="font-size:18px" :href="file.Url">{{ file.Name }}</a>
                                                         </div>
                                                         <div v-show="showFileUploadButton">
-                                                            <input type="file" id="newW9" accept="application/pdf, image/png, image/jpeg, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, image/heic, video/hevc, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/tiff" class="btn btn-secondary" placeholder="Upload W9">&nbsp;<button class="btn btn-primary" disabled type="button" id="newW9Button" v-on:click="uploadW9()">Upload</button>
+                                                            <input 
+                                                                type="file" 
+                                                                ref="fileInputW9" 
+                                                                @change="fileSelected($event, 'W9')" 
+                                                                id="newW9" 
+                                                                accept="application/pdf, image/png, image/jpeg, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, image/heic, video/hevc, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/tiff" 
+                                                                class="btn btn-secondary" 
+                                                                placeholder="Upload W9">
+                                                            &nbsp;<button class="btn btn-primary" disabled type="button" id="newW9Button" v-on:click="uploadW9()">Upload</button>
+                                                            &nbsp;<button v-if="fileAddedW9" @click="clearFileInput('fileInputW9')" title="Remove File" class="btn btn-danger">X</button>
                                                         </div>
                                                     </div>
                                                 </div><hr>
@@ -286,7 +318,16 @@
                                                             <a style="font-size:18px" :href="file.Url">{{ file.Name }}</a>
                                                         </div>
                                                         <div v-show="showFileUploadButton">
-                                                            <input type="file" id="newInvoice" accept="application/pdf, image/png, image/jpeg, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, image/heic, video/hevc, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/tiff" class="btn btn-secondary" placeholder="Upload Invoice">&nbsp;<button class="btn btn-primary" id="newInvoiceButton" disabled type="button" v-on:click="uploadInvoice()">Upload</button>
+                                                            <input 
+                                                                type="file" 
+                                                                id="newInvoice" 
+                                                                ref="fileInputInvoice" 
+                                                                @change="fileSelected($event, 'Invoice')" 
+                                                                accept="application/pdf, image/png, image/jpeg, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, image/heic, video/hevc, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/tiff" 
+                                                                class="btn btn-secondary" 
+                                                                placeholder="Upload Invoice">
+                                                            &nbsp;<button class="btn btn-primary" id="newInvoiceButton" disabled type="button" v-on:click="uploadInvoice()">Upload</button>
+                                                            &nbsp;<button v-if="fileAddedInvoice" @click="clearFileInput('fileInputInvoice')" title="Remove File" class="btn btn-danger">X</button>
                                                         </div>
                                                     </div>
                                                 </div><hr>
@@ -297,7 +338,9 @@
                                                             <a style="font-size:18px" :href="file.Url">{{ file.Name }}</a>
                                                         </div>
                                                         <div v-show="showFileUploadButton">
-                                                            <input type="file" id="newReceipt" accept="application/pdf, image/png, image/jpeg, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, image/heic, video/hevc, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/tiff" class="btn btn-secondary" placeholder="Upload Receipt">&nbsp;<button class="btn btn-primary" id="newReceiptButton" disabled type="button" v-on:click="uploadReceipt()">Upload</button>
+                                                            <input type="file" id="newReceipt" ref="fileInputReceipt" @change="fileSelected($event, 'Receipt')" accept="application/pdf, image/png, image/jpeg, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, image/heic, video/hevc, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/tiff" class="btn btn-secondary" placeholder="Upload Receipt">
+                                                            &nbsp;<button class="btn btn-primary" id="newReceiptButton" disabled type="button" v-on:click="uploadReceipt()">Upload</button>
+                                                            &nbsp;<button v-if="fileAddedReceipt" @click="clearFileInput('fileInputReceipt')" title="Remove File" class="btn btn-danger">X</button>
                                                         </div>   
                                                     </div>
                                                 </div>
@@ -372,12 +415,13 @@
                             Move the request to <b>{{ this.newStatus }}</b>?
                         </div>
                         <div class="col-12 text-center" style="margin-top:1rem;font-weight: 600;font-size:18px">
-                            <b class="text-danger" v-show="!this.validForm">Please provide a value for all remedial action plans and expected costs.</b>
+                            <span v-show="!this.validForm">Please provide a value for all remedial action plans and expected costs.</span>
+                            <span v-show="!this.hasSentNote && this.isResent">To return a request to a previous status, you must first send a note to the provider.</span>
                         </div>
                     </div>
                     <div class="row" v-show="!statusUpdated" style="margin-top:1rem">
                         <div class="col text-end">
-                            <button class="btn btn-success" v-on:click="updateRequestStatus()">Yes</button>
+                            <button class="btn btn-success" :disabled="!this.hasSentNote && this.isResent" v-on:click="updateRequestStatus()">Yes</button>
                         </div>
                         <div class="col">
                             <button class="btn btn-danger" data-bs-dismiss="modal">No</button>
@@ -481,8 +525,12 @@
             CreatedBy: "",
             CreatedAt: ""
         },
+        hasSentNote: false,
         validForm: true,
         isResent: false,
+        fileAddedW9: false,
+        fileAddedInvoice: false,
+        fileAddedReceipt: false,
       }
     },
     watch: {
@@ -494,6 +542,32 @@
         }
     },
     methods: {
+        fileSelected(event, fileType) {
+            if (event.target.files && event.target.files.length > 0) {
+                if (fileType === 'W9') this.fileAddedW9 = true;
+                if (fileType === 'Invoice') this.fileAddedInvoice = true;
+                if (fileType === 'Receipt') this.fileAddedReceipt = true;
+            }
+        },
+        clearFileInput(inputRef) {
+            this.$refs[inputRef].value = null;
+
+            if (inputRef === 'fileInputW9') {
+                this.fileAddedW9 = false;
+                var buttonEle = document.getElementById("newW9Button");
+                buttonEle.disabled = true;
+            }
+            if (inputRef === 'fileInputInvoice') {
+                this.fileAddedInvoice = false;
+                var buttonEle = document.getElementById("newInvoiceButton");
+                buttonEle.disabled = true;
+            } 
+            if (inputRef === 'fileInputReceipt') {
+                this.fileAddedReceipt = false;
+                var buttonEle = document.getElementById("newReceiptButton");
+                buttonEle.disabled = true;
+            }
+        },
         async getRequestDetails(requestId) {
             $('#RequestDetailsModal').modal('show')
             await this.getRequestDetailsAPI(requestId);
@@ -601,6 +675,7 @@
         async addNote() {
             this.newNote.RequestId = this.currentRequestDetails.id
             await this.addNoteAPI(this.newNote);
+            this.hasSentNote = true;
             this.newNote.Text = "";
             await this.getRequestDetailsAPI(this.currentRequestDetails.id, true)
             this.scrollToNotesBottom()
